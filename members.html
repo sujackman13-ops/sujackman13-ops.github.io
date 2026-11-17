@@ -55,9 +55,19 @@ body{margin:0;background:#14163a;color:#eef0ff;font-family:"Noto Sans KR",system
 .pf.lead .nm{font-size:32px;color:#ffd98a}
 .pf.lead .crown{font-size:26px;line-height:1;margin:-8px 0 -2px}
 .pf.vice{--c:var(--vice)}
+/* 운영진 캐릭터 초상 */
+.pf .por{position:relative;width:100%;max-width:240px;aspect-ratio:5/6;border-radius:14px;overflow:hidden;border:2px solid color-mix(in srgb,var(--c) 60%,transparent);box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.pf .por img{width:100%;height:100%;object-fit:cover;object-position:center 30%;display:block}
+.pf .por::after{content:"";position:absolute;inset:auto 0 0 0;height:30%;background:linear-gradient(transparent,rgba(20,22,58,.75))}
+.pf.lead .por{max-width:280px;box-shadow:0 0 0 4px rgba(242,184,75,.25),0 0 34px rgba(242,184,75,.35)}
+.say{position:relative;max-width:100%;margin-bottom:4px;padding:8px 12px;border-radius:10px;background:#fbf7ee;color:#2a2233;font-size:13px;font-weight:500;line-height:1.45;white-space:pre-line;word-break:keep-all;box-shadow:0 4px 12px rgba(0,0,0,.25)}
+.say::after{content:"";position:absolute;left:50%;bottom:-7px;transform:translateX(-50%);border:7px solid transparent;border-bottom:0;border-top-color:#fbf7ee}
+.pf{justify-content:flex-end}
+.pf .role{margin-bottom:auto}
+.pf .say{margin-top:10px}
 
 /* 아바타 */
-.av{display:grid;place-items:center;border-radius:50%;font-family:"Gowun Batang",serif;font-weight:700;color:#fff;flex:none;
+.av{display:grid;place-items:center;border-radius:50%;overflow:hidden;font-family:"Gowun Batang",serif;font-weight:700;color:#fff;flex:none;
   background:radial-gradient(circle at 35% 30%,color-mix(in srgb,var(--h) 85%,#fff),var(--h) 60%,color-mix(in srgb,var(--h) 60%,#000));
   border:2px solid rgba(255,255,255,.18);text-shadow:0 1px 2px rgba(0,0,0,.35)}
 
@@ -76,6 +86,7 @@ body{margin:0;background:#14163a;color:#eef0ff;font-family:"Noto Sans KR",system
 .mc .av{width:42px;height:42px;font-size:18px}
 .mc .nm{font-size:15px;font-weight:700;color:#fff;line-height:1.3;word-break:break-all}
 .mc .no{font-size:11.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.av img{width:100%;height:100%;object-fit:cover;object-position:center 22%;transform:scale(1.6);transform-origin:center 25%;display:block}
 .mc mark{background:rgba(155,107,255,.35);color:#fff;border-radius:3px;padding:0 1px}
 .empty{display:none;text-align:center;padding:24px;color:var(--muted);font-size:14px}
 .note{font-size:12.5px;color:var(--muted);margin:0}
@@ -157,23 +168,30 @@ body{margin:0;background:#14163a;color:#eef0ff;font-family:"Noto Sans KR",system
 
 </main>
 
-<script src="members.js?v=1"></script>
+<script src="members.js?v=3"></script>
 <script>
 (function(){
   var G=window.GUILD;
   var pal=['#9b6bff','#3fc7b4','#ff8fb5','#f2b84b','#5aa9ff','#ff8a7a','#7ed66f','#c58cff','#4fd1e8','#ffb36b'];
   function hue(n){var h=0;for(var i=0;i<n.length;i++)h=(h*31+n.charCodeAt(i))>>>0;return pal[h%pal.length];}
   function esc(s){return s.replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
-  function av(n,cls){return '<span class="av '+(cls||'')+'" style="--h:'+hue(n)+'" aria-hidden="true">'+esc(Array.from(n)[0])+'</span>';}
+  var AV=G.avatars||{}, SAY=G.says||{};
+  function av(n,cls){var img=AV[n];
+    return '<span class="av '+(cls||'')+'" style="--h:'+hue(n)+'" aria-hidden="true">'+(img?'<img src="'+esc(img)+'" alt="" loading="lazy">':esc(Array.from(n)[0]))+'</span>';}
+  function staff(n,role,cls,crown){
+    var img=AV[n], say=SAY[n];
+    return '<div class="pf '+cls+'">'+(crown?'<span class="crown" aria-hidden="true">👑</span>':'')+'<span class="role">'+role+'</span>'+
+      (say?'<span class="say">'+esc(say)+'</span>':'')+
+      (img?'<span class="por"><img src="'+esc(img)+'" alt="'+esc(n)+' 캐릭터" loading="lazy"></span>':av(n))+
+      '<span class="nm">'+esc(n)+'</span></div>';}
 
   document.getElementById('total').innerHTML=(1+G.vice.length+G.members.length)+'<small>명</small>';
   document.getElementById('cV').textContent=G.vice.length;
   document.getElementById('cM').textContent=G.members.length;
   document.getElementById('mCount').textContent=G.members.length+'명';
 
-  document.getElementById('staff').innerHTML=
-    '<div class="pf lead"><span class="crown" aria-hidden="true">👑</span><span class="role">문주</span>'+av(G.leader)+'<span class="nm">'+esc(G.leader)+'</span></div>'+
-    G.vice.map(function(n){return '<div class="pf vice"><span class="role">부문주</span>'+av(n)+'<span class="nm">'+esc(n)+'</span></div>';}).join('');
+  document.getElementById('staff').innerHTML=staff(G.leader,'문주','lead',true)+
+    G.vice.map(function(n){return staff(n,'부문주','vice');}).join('');
 
   var list=G.members.map(function(n,i){return {n:n,i:i+1};}), sort='join';
   var grid=document.getElementById('grid'), q=document.getElementById('q'), empty=document.getElementById('empty');
