@@ -36,7 +36,12 @@ window.GUILD = {
     "신알트": "avatar-sinalt.jpg",
     "물서리": "avatar-mulseori.jpg",
     "도깨비길": "avatar-dokgil.jpg",
-    "SsoYa9": "avatar-ssoya.jpg"
+    "SsoYa9": "avatar-ssoya.jpg",
+    "담황": "avatar-damhwang.jpg",
+    "비밀의벽": "avatar-secretwall.jpg",
+    "숲어둠을걷는도깨": "avatar-forestdok.jpg",
+    "인덕원역": "avatar-indeogwon.jpg",
+    "육무쌍": "avatar-yukmussang.jpg"
   },
   says: {
     "순록이": "안녕하세요. 순록이입니다. 잘 부탁드립니다.",
@@ -62,6 +67,11 @@ window.GUILD = {
     "신알트": "안녕하세요. 신알트입니다. 잘 부탁드립니다.",
     "물서리": "안녕하세요. 물서리입니다. 잘 부탁드립니다.",
     "도깨비길": "안녕하세요. 도깨비길입니다. 잘 부탁드립니다.",
-    "SsoYa9": "안녕하세요. SsoYa9입니다. 잘 부탁드립니다."
+    "SsoYa9": "안녕하세요. SsoYa9입니다. 잘 부탁드립니다.",
+    "담황": "안녕하세요. 담황입니다. 잘 부탁드립니다.",
+    "비밀의벽": "안녕하세요. 비밀의벽입니다. 잘 부탁드립니다.",
+    "숲어둠을걷는도깨": "안녕하세요. 숲어둠을걷는도깨입니다. 잘 부탁드립니다.",
+    "인덕원역": "안녕하세요. 인덕원역입니다. 잘 부탁드립니다.",
+    "육무쌍": "안녕하세요. 육무쌍입니다. 잘 부탁드립니다."
   }
 };
