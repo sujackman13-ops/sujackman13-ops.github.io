@@ -45,6 +45,7 @@ body{margin:0;background:#14163a;color:#eef0ff;font-family:"Noto Sans KR",system
 .pill.yb{background:linear-gradient(90deg,var(--yoshin),var(--barrier));color:#fff}
 .pill.g{background:var(--garden)}
 .pill.a{background:var(--artifact)}
+.pill.apl{background:transparent;border:1px dashed}.pill.a2{border-color:var(--artifact);color:var(--artifact)}.pill.g2{border-color:var(--garden);color:var(--garden)}
 .pill.reset{background:transparent;border:1px dashed #6e74b8;color:#b3b7df}
 .wk-note{margin:12px 0 0;font-size:12.5px;color:var(--muted)}
 
@@ -80,6 +81,8 @@ body{margin:0;background:#14163a;color:#eef0ff;font-family:"Noto Sans KR",system
 .desc ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:14px;color:#dfe1f7}
 .rule{border-left:3px solid var(--c);background:color-mix(in srgb,var(--c) 12%,transparent);border-radius:6px;padding:10px 14px;font-size:14px}
 .rule b{color:var(--c)}
+.rule .ap{display:block;margin-top:2px;font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.live{color:#7dffb0!important}
 .score{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
 .score .bar{flex:1;height:10px;border-radius:99px;background:#2c3168;overflow:hidden;display:flex}
 .score .bar i{display:block;height:100%;background:var(--c)}
@@ -164,13 +167,13 @@ figcaption{font-size:12px;color:var(--muted);padding:8px 12px}
       <div class="wk-days" id="week">
         <div class="wd" data-d="1"><span class="dn">월</span></div>
         <div class="wd" data-d="2"><span class="dn">화</span><span class="pill yb">20:00<small>요신·결계지 마감</small></span></div>
-        <div class="wd" data-d="3"><span class="dn">수</span><span class="pill reset">05:00<small>요신 시즌 갱신</small></span></div>
+        <div class="wd" data-d="3"><span class="dn">수</span><span class="pill reset">05:00<small>요신·결계지 시즌 갱신</small></span></div>
         <div class="wd" data-d="4"><span class="dn">목</span></div>
-        <div class="wd" data-d="5"><span class="dn">금</span><span class="pill a">20:00<small>신기 쟁탈전</small></span></div>
-        <div class="wd" data-d="6"><span class="dn">토</span><span class="pill g">20:00<small>미혹의 정원</small></span></div>
+        <div class="wd" data-d="5"><span class="dn">금</span><span class="pill apl a2">08:00<small>신기 신청 마감</small></span><span class="pill a">20:00<small>신기 쟁탈전</small></span></div>
+        <div class="wd" data-d="6"><span class="dn">토</span><span class="pill apl g2">08:00<small>미혹 신청 마감</small></span><span class="pill g">20:00<small>미혹의 정원</small></span></div>
         <div class="wd" data-d="0"><span class="dn">일</span></div>
       </div>
-      <p class="wk-note">요신 토벌령·결계지 방어는 수시로 열려요. 문파 주간 기여도는 화요일 20시에 마감합니다. 모든 시간은 한국 시간이에요.</p>
+      <p class="wk-note">요신 토벌령·결계지 방어는 수시로 열리고, 문파 주간 기여도는 화요일 20시에 마감해요. 미혹의 정원·신기 쟁탈전은 20:00~20:30 사이에 전투가 시작돼요. 모든 시간은 한국 시간이에요.</p>
     </div>
   </section>
 
@@ -179,8 +182,8 @@ figcaption{font-size:12px;color:var(--muted);padding:8px 12px}
     <nav class="toc" aria-label="문파 전투 목차">
       <a class="ti" href="#yoshin" style="--c:var(--yoshin)"><span class="num">1</span><svg class="emb"><use href="#ic-yoshin"/></svg><span class="nm">요신 토벌령</span><span class="wh">수시 오픈 · 마감 화 20:00</span><span class="cd" data-cd="yoshin">마감까지 <b>-</b></span></a>
       <a class="ti" href="#barrier" style="--c:var(--barrier)"><span class="num">2</span><svg class="emb"><use href="#ic-barrier"/></svg><span class="nm">결계지 방어</span><span class="wh">수시 오픈 · 마감 화 20:00</span><span class="cd" data-cd="barrier">마감까지 <b>-</b></span></a>
-      <a class="ti" href="#garden" style="--c:var(--garden)"><span class="num">3</span><svg class="emb"><use href="#ic-garden"/></svg><span class="nm">미혹의 정원</span><span class="wh">매주 토요일 20:00</span><span class="cd" data-cd="garden">시작까지 <b>-</b></span></a>
-      <a class="ti" href="#artifact" style="--c:var(--artifact)"><span class="num">4</span><svg class="emb"><use href="#ic-artifact"/></svg><span class="nm">신기 쟁탈전</span><span class="wh">매주 금요일 20:00</span><span class="cd" data-cd="artifact">시작까지 <b>-</b></span></a>
+      <a class="ti" href="#garden" style="--c:var(--garden)"><span class="num">3</span><svg class="emb"><use href="#ic-garden"/></svg><span class="nm">미혹의 정원</span><span class="wh">토 20:00~20:30 · 신청 토 08:00까지</span><span class="cd" data-cd="garden">시작까지 <b>-</b></span></a>
+      <a class="ti" href="#artifact" style="--c:var(--artifact)"><span class="num">4</span><svg class="emb"><use href="#ic-artifact"/></svg><span class="nm">신기 쟁탈전</span><span class="wh">금 20:00~20:30 · 신청 금 08:00까지</span><span class="cd" data-cd="artifact">시작까지 <b>-</b></span></a>
     </nav>
   </section>
 
@@ -220,40 +223,26 @@ figcaption{font-size:12px;color:var(--muted);padding:8px 12px}
       <svg class="emb" aria-hidden="true"><use href="#ic-barrier"/></svg>
       <div class="tt">
         <h3><span class="no">02</span>결계지 방어</h3>
-        <div class="chips"><span class="chip k">수시 오픈</span><span class="chip">🛡 협력 콘텐츠</span><span class="chip">주간 마감 화 20:00</span></div>
+        <div class="chips"><span class="chip k">수시 오픈</span><span class="chip">🌐 서버 그룹</span><span class="chip">⏱ 5분</span><span class="chip">시즌 갱신 매주 수 05:00</span></div>
       </div>
       <div class="bt-cd"><span class="l">문파 주간 마감까지</span><span class="v" data-cd2="barrier">--:--:--</span></div>
     </div>
     <div class="prog"><i data-prog="barrier"></i></div>
     <div class="bt-body">
       <div class="desc">
-        <p class="goal">사방에서 밀려드는 요괴를 막아 내고, 한가운데의 결계를 끝까지 지켜 내는 방어전이에요.</p>
+        <p class="goal">문파원과 힘을 모아, 몰려오는 요귀에게서 타워를 지켜 내는 방어전이에요.</p>
         <ul>
-          <li>요괴가 결계에 닿기 전에 막아 내는 게 목표예요.</li>
-          <li>요신 토벌령과 같이 수시로 열리고, 화요일 20시에 주간 기여도가 마감돼요.</li>
+          <li>같은 서버 그룹 안에서 진행되고, 한 판은 5분이에요.</li>
+          <li>시즌 기록은 매주 수요일 새벽 5시에 새로 시작돼요.</li>
+          <li>요신 토벌령처럼 수시로 열리고, 문파 주간 기여도는 화요일 20시에 마감돼요.</li>
         </ul>
         <div class="rule">시간이 안 되면 <b>분신 등록</b>, 직접 들어갈 땐 <b>분신 해제</b>!</div>
         <div class="score"><span>기여도</span><span class="bar"><i style="width:50%"></i></span><b>직접 10점</b></div>
         <div class="score"><span>기여도</span><span class="bar"><i class="o" style="width:25%"></i></span><b>분신 5점</b></div>
       </div>
       <figure>
-        <svg class="scene" viewBox="0 0 480 300" preserveAspectRatio="xMidYMid slice" role="img" aria-label="가운데 결계를 향해 사방에서 요괴가 몰려오는 그림">
-          <defs><radialGradient id="bg2" cx="50%" cy="50%" r="70%"><stop offset="0" stop-color="#1f5a5a"/><stop offset="1" stop-color="#0d1b2e"/></radialGradient>
-            <radialGradient id="ward" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#bff3ea" stop-opacity=".9"/><stop offset=".6" stop-color="#3fc7b4" stop-opacity=".35"/><stop offset="1" stop-color="#3fc7b4" stop-opacity="0"/></radialGradient></defs>
-          <rect width="480" height="300" fill="url(#bg2)"/>
-          <g stroke="#3fc7b4" stroke-opacity=".25" fill="none"><circle cx="240" cy="150" r="70"/><circle cx="240" cy="150" r="110"/><circle cx="240" cy="150" r="150"/></g>
-          <circle cx="240" cy="150" r="64" fill="url(#ward)"/>
-          <circle cx="240" cy="150" r="38" fill="none" stroke="#bff3ea" stroke-width="3"/>
-          <circle cx="240" cy="150" r="26" fill="none" stroke="#bff3ea" stroke-width="2" stroke-dasharray="5 5"/>
-          <path d="M240 128 L246 146 L264 150 L246 154 L240 172 L234 154 L216 150 L234 146 Z" fill="#e9fffb"/>
-          <g fill="#ff7a7a"><g id="mob"><circle r="9"/><circle cx="-3" cy="-2" r="1.6" fill="#1a0b0b"/><circle cx="3" cy="-2" r="1.6" fill="#1a0b0b"/><path d="M-6 -7 l-3 -6 4 3 M6 -7 l3 -6 -4 3" stroke="#ff7a7a" stroke-width="2"/></g></g>
-          <use href="#mob" x="70" y="60"/><use href="#mob" x="40" y="160"/><use href="#mob" x="90" y="250"/>
-          <use href="#mob" x="410" y="50"/><use href="#mob" x="440" y="170"/><use href="#mob" x="380" y="260"/>
-          <use href="#mob" x="240" y="22"/><use href="#mob" x="250" y="280"/>
-          <g stroke="#ff9a9a" stroke-width="2" stroke-dasharray="4 6" fill="none" opacity=".7"><path d="M84 70 L180 120"/><path d="M54 160 L170 152"/><path d="M100 240 L185 185"/><path d="M398 60 L300 118"/><path d="M426 170 L310 155"/><path d="M370 250 L295 188"/><path d="M240 36 L240 92"/><path d="M250 266 L244 210"/></g>
-          <g fill="#bff3ea"><circle cx="190" cy="105" r="6"/><circle cx="292" cy="105" r="6"/><circle cx="185" cy="195" r="6"/><circle cx="298" cy="195" r="6"/></g>
-        </svg>
-        <figcaption>사방에서 몰려오는 요괴를 막아 결계를 지켜요 · 짐승특공대 그림</figcaption>
+        <img src="barrier-tower.jpg" alt="결계 문양 위에 서 있는, 푸른빛이 도는 석탑" loading="lazy" style="object-position:center 40%">
+        <figcaption>지켜야 할 결계지의 타워 · 게임 화면</figcaption>
       </figure>
     </div>
   </article>
@@ -264,39 +253,25 @@ figcaption{font-size:12px;color:var(--muted);padding:8px 12px}
       <svg class="emb" aria-hidden="true"><use href="#ic-garden"/></svg>
       <div class="tt">
         <h3><span class="no">03</span>미혹의 정원</h3>
-        <div class="chips"><span class="chip k">매주 토 20:00</span><span class="chip">⚔ 문파 간 경쟁·협력</span><span class="chip">기여도 20점</span></div>
+        <div class="chips"><span class="chip k">토 20:00~20:30 전투 시작</span><span class="chip">🌀 유니버스 매칭</span><span class="chip">⏱ 15분</span><span class="chip">👥 문파원 전부</span><span class="chip">매주 진행</span></div>
       </div>
-      <div class="bt-cd"><span class="l">시작까지</span><span class="v" data-cd2="garden">--:--:--</span></div>
+      <div class="bt-cd"><span class="l" data-cdl="garden">시작까지</span><span class="v" data-cd2="garden">--:--:--</span></div>
     </div>
     <div class="prog"><i data-prog="garden"></i></div>
     <div class="bt-body">
       <div class="desc">
-        <p class="goal">여러 문파가 한 정원에 모여 서로 겨루기도, 힘을 합치기도 하는 문파 간 콘텐츠예요.</p>
+        <p class="goal">동맹이냐, 배신이냐! 보물을 차지하려고 문파끼리 벌이는 눈치 싸움이에요.</p>
         <ul>
-          <li>짐승특공대는 <b>매주 토요일 20시</b>에 모여요.</li>
-          <li>참여하면 주간 기여도 <b>20점</b>, 한 번으로 보상 기준 30점의 3분의 2를 채워요.</li>
+          <li><b>신청 기간</b>: 매주 일요일 05:00 ~ 토요일 08:00</li>
+          <li><b>진행 시간</b>: 토요일 20:00~20:30 전투 시작, 한 판 15분</li>
+          <li>유니버스 매칭으로 상대 문파가 정해지고, 문파원 누구나 참여할 수 있어요.</li>
         </ul>
-        <div class="rule"><b>20시 정각</b> 시작! 미리 접속해 주세요.</div>
+        <div class="rule">신청 마감은 <b>토요일 08:00</b>! <span class="ap" data-ap="garden"></span></div>
         <div class="score"><span>기여도</span><span class="bar"><i style="width:100%"></i></span><b>20점</b></div>
       </div>
       <figure>
-        <svg class="scene" viewBox="0 0 480 300" preserveAspectRatio="xMidYMid slice" role="img" aria-label="안개 낀 밤의 정원과 등불, 꽃잎이 흩날리는 그림">
-          <defs><linearGradient id="bg3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a1640"/><stop offset="1" stop-color="#4a2550"/></linearGradient>
-            <radialGradient id="glow3"><stop offset="0" stop-color="#ffd3a0" stop-opacity=".9"/><stop offset="1" stop-color="#ffd3a0" stop-opacity="0"/></radialGradient>
-            <filter id="blur3"><feGaussianBlur stdDeviation="8"/></filter></defs>
-          <rect width="480" height="300" fill="url(#bg3)"/>
-          <circle cx="380" cy="70" r="34" fill="#ffe9f1" opacity=".85"/>
-          <path d="M0 210 Q120 170 240 205 T480 195 V300 H0Z" fill="#2c1735"/>
-          <g fill="none" stroke="#ff8fb5" stroke-opacity=".55" stroke-width="10" stroke-linecap="round"><path d="M40 270 H180 V230 H110 V200"/><path d="M440 270 H300 V230 H370 V200"/><path d="M240 290 V245"/></g>
-          <g transform="translate(120 120)"><path d="M0 0 C-30 -10 -40 -40 -10 -60 C10 -75 40 -55 30 -30 C50 -40 70 -10 40 5 Z" fill="#3a1d47"/></g>
-          <g fill="#ff8fb5"><circle cx="100" cy="72" r="5"/><circle cx="118" cy="62" r="4"/><circle cx="135" cy="80" r="5"/><circle cx="92" cy="96" r="4"/><circle cx="150" cy="98" r="4"/></g>
-          <path d="M125 120 V215" stroke="#2a1430" stroke-width="7"/>
-          <g><circle cx="200" cy="170" r="26" fill="url(#glow3)"/><rect x="192" y="158" width="16" height="22" rx="4" fill="#ffb86b"/>
-             <circle cx="300" cy="160" r="26" fill="url(#glow3)"/><rect x="292" y="148" width="16" height="22" rx="4" fill="#ffb86b"/></g>
-          <ellipse cx="240" cy="235" rx="260" ry="26" fill="#f6d6ff" opacity=".22" filter="url(#blur3)"/>
-          <g fill="#ffc3d6" opacity=".85"><ellipse cx="60" cy="40" rx="4" ry="2" transform="rotate(30 60 40)"/><ellipse cx="250" cy="60" rx="4" ry="2" transform="rotate(-20 250 60)"/><ellipse cx="330" cy="120" rx="4" ry="2" transform="rotate(50 330 120)"/><ellipse cx="420" cy="150" rx="4" ry="2"/><ellipse cx="170" cy="40" rx="3.5" ry="1.8" transform="rotate(10 170 40)"/></g>
-        </svg>
-        <figcaption>안개 낀 정원에서 문파끼리 겨뤄요 · 짐승특공대 그림</figcaption>
+        <img src="garden-warrior.jpg" alt="창을 든 갑옷 차림의 무장" loading="lazy" style="object-position:center 20%">
+        <figcaption>미혹의 정원 · 게임 화면</figcaption>
       </figure>
     </div>
   </article>
@@ -307,43 +282,31 @@ figcaption{font-size:12px;color:var(--muted);padding:8px 12px}
       <svg class="emb" aria-hidden="true"><use href="#ic-artifact"/></svg>
       <div class="tt">
         <h3><span class="no">04</span>신기 쟁탈전</h3>
-        <div class="chips"><span class="chip k">매주 금 20:00</span><span class="chip">🏯 중앙 거점 장악</span><span class="chip">⚔ 문파 간 대규모 전투</span><span class="chip">기여도 20점</span></div>
+        <div class="chips"><span class="chip k">금 20:00~20:30 전투 시작</span><span class="chip">🌀 유니버스 매칭</span><span class="chip">⏱ 20분</span><span class="chip">👥 문파원 전부</span><span class="chip">매주 진행</span></div>
       </div>
-      <div class="bt-cd"><span class="l">시작까지</span><span class="v" data-cd2="artifact">--:--:--</span></div>
+      <div class="bt-cd"><span class="l" data-cdl="artifact">시작까지</span><span class="v" data-cd2="artifact">--:--:--</span></div>
     </div>
     <div class="prog"><i data-prog="artifact"></i></div>
     <div class="bt-body">
       <div class="desc">
-        <p class="goal">신기를 차지하려고 문파끼리 크게 맞붙는 전투예요. 중앙 거점을 누가 잡느냐가 승부를 가릅니다.</p>
+        <p class="goal">최대 4개 문파가 한 전장에서 맞붙어, 이기면 강력한 보상을 얻는 문파 전투예요.</p>
         <ul>
-          <li>짐승특공대는 <b>매주 금요일 20시</b>에 출전해요.</li>
-                    <li>참여하면 주간 기여도 <b>20점</b>이에요.</li>
+          <li><b>신청 기간</b>: 매주 토요일 05:00 ~ 금요일 08:00</li>
+          <li><b>진행 시간</b>: 금요일 20:00~20:30 전투 시작, 한 판 20분</li>
+          <li>신기를 두고 싸우는 전투라 중앙 거점을 잡는 게 핵심이에요.</li>
+          <li>유니버스 매칭으로 상대 문파가 정해지고, 문파원 누구나 참여할 수 있어요.</li>
         </ul>
-        <div class="rule"><b>20시 정각</b> 시작! 미리 접속해 주세요.</div>
+        <div class="rule">신청 마감은 <b>금요일 08:00</b>! <span class="ap" data-ap="artifact"></span></div>
         <div class="score"><span>기여도</span><span class="bar"><i style="width:100%"></i></span><b>20점</b></div>
       </div>
       <figure>
-        <svg class="scene" viewBox="0 0 480 300" preserveAspectRatio="xMidYMid slice" role="img" aria-label="가운데 제단 위에 빛나는 신기가 있고 양쪽에서 문파 깃발이 다가오는 그림">
-          <defs><linearGradient id="bg4" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1b1d4d"/><stop offset="1" stop-color="#3b2a1a"/></linearGradient>
-            <radialGradient id="glow4"><stop offset="0" stop-color="#fff2c4"/><stop offset=".4" stop-color="#f2b84b" stop-opacity=".6"/><stop offset="1" stop-color="#f2b84b" stop-opacity="0"/></radialGradient></defs>
-          <rect width="480" height="300" fill="url(#bg4)"/>
-          <g stroke="#f2b84b" stroke-opacity=".25" stroke-width="2"><path d="M240 120 L0 40"/><path d="M240 120 L480 40"/><path d="M240 120 L60 0"/><path d="M240 120 L420 0"/><path d="M240 120 L240 0"/></g>
-          <path d="M120 300 L180 200 H300 L360 300Z" fill="#2a1c12"/>
-          <path d="M175 210 H305 L315 228 H165Z" fill="#5a3f22"/><path d="M190 190 H290 L300 210 H180Z" fill="#6e4f2c"/><path d="M205 172 H275 L283 190 H197Z" fill="#856038"/>
-          <circle cx="240" cy="128" r="70" fill="url(#glow4)"/>
-          <path d="M240 82 L262 128 L240 168 L218 128 Z" fill="#ffe7a8" stroke="#fff6d8" stroke-width="2"/><path d="M240 82 V168 M218 128 H262" stroke="#c98a1c" stroke-width="1.5"/>
-          <g><path d="M40 300 V170" stroke="#2a2a40" stroke-width="4"/><path d="M42 172 h46 l-10 14 10 14 h-46z" fill="#e05555"/>
-             <path d="M90 300 V200" stroke="#2a2a40" stroke-width="4"/><path d="M92 202 h36 l-8 11 8 11 h-36z" fill="#e05555"/>
-             <path d="M440 300 V170" stroke="#2a2a40" stroke-width="4"/><path d="M438 172 h-46 l10 14 -10 14 h46z" fill="#4a8ae0"/>
-             <path d="M390 300 V200" stroke="#2a2a40" stroke-width="4"/><path d="M388 202 h-36 l8 11 -8 11 h36z" fill="#4a8ae0"/></g>
-          <g fill="#fff2c4"><circle cx="160" cy="70" r="2"/><circle cx="330" cy="60" r="2.4"/><circle cx="300" cy="96" r="1.6"/><circle cx="180" cy="110" r="1.8"/></g>
-        </svg>
-        <figcaption>신기를 두고 중앙 거점을 다퉈요 · 짐승특공대 그림</figcaption>
+        <img src="artifact-dragon.jpg" alt="금빛 수정을 감싸 안은 용 조각의 신기" loading="lazy" style="object-position:center 30%">
+        <figcaption>쟁탈의 대상, 신기 · 게임 화면</figcaption>
       </figure>
     </div>
   </article>
 
-  <p class="src">콘텐츠 설명은 게임 내 안내와 공개 기사(<a href="https://byline.network/2026/08/20-643/" target="_blank" rel="noopener">바이라인네트워크</a>, <a href="https://dealsite.co.kr/articles/167556" target="_blank" rel="noopener">딜사이트</a>)를 바탕으로 문파원용으로 정리했어요. 요신 토벌령 이미지는 게임 화면이고, 나머지 그림은 이 페이지용으로 새로 그린 거예요. 일정과 점수는 짐승특공대 문파 규칙 기준입니다.</p>
+  <p class="src">콘텐츠 설명과 그림은 게임 내 안내 화면을 바탕으로 문파원용으로 정리했어요(신기 쟁탈전 중앙 거점 설명은 <a href="https://byline.network/2026/08/20-643/" target="_blank" rel="noopener">바이라인네트워크</a> 기사 참고). 그림의 저작권은 게임사에 있어요. 문파 일정·기여도 점수는 짐승특공대 문파 규칙 기준입니다.</p>
 </main>
 
 <script src="schedule.js"></script>
@@ -358,16 +321,32 @@ figcaption{font-size:12px;color:var(--muted);padding:8px 12px}
 
   function tick(){
     var now=Date.now();
-    var s=T.soonest(now), f=T.fmt(s.ms);
-    document.getElementById('nextName').textContent=label(s.b)+(s.b.kind==='deadline'?'까지':' 시작까지');
-    document.getElementById('nextCd').textContent=f.text;
-    var at=new Date(now+s.ms+9*3600000);
-    document.getElementById('nextAt').textContent=(at.getUTCMonth()+1)+'월 '+at.getUTCDate()+'일 ('+dayName[at.getUTCDay()]+') '+String(at.getUTCHours()).padStart(2,'0')+':'+String(at.getUTCMinutes()).padStart(2,'0')+' · 한국 시간';
+    var s=T.soonest(now);
+    var nn=document.getElementById('nextName'),nc=document.getElementById('nextCd'),na=document.getElementById('nextAt');
+    if(s.live){
+      nn.textContent=s.b.name; nc.textContent='지금 전투 시작!'; nc.classList.add('live'); na.textContent='20:00~20:30 사이 전투 시작 · 바로 접속하세요';
+    }else{
+      var f=T.fmt(s.ms); nc.classList.remove('live');
+      nn.textContent=label(s.b)+(s.b.kind==='deadline'?'까지':' 시작까지');
+      nc.textContent=f.text;
+      var at=new Date(now+s.ms+9*3600000);
+      na.textContent=(at.getUTCMonth()+1)+'월 '+at.getUTCDate()+'일 ('+dayName[at.getUTCDay()]+') '+String(at.getUTCHours()).padStart(2,'0')+':'+String(at.getUTCMinutes()).padStart(2,'0')+' · 한국 시간';
+    }
     B.forEach(function(b){
-      var ms=T.untilNext(b,now), t=T.fmt(ms);
-      var a=document.querySelector('[data-cd="'+b.id+'"] b'); if(a) a.textContent=t.text;
-      var c=document.querySelector('[data-cd2="'+b.id+'"]'); if(c) c.textContent=t.text;
-      var p=document.querySelector('[data-prog="'+b.id+'"]'); if(p) p.style.width=((1-ms/WEEK)*100).toFixed(2)+'%';
+      var live=T.isLive(b,now), ms=T.untilNext(b,now), t=T.fmt(ms);
+      var a=document.querySelector('[data-cd="'+b.id+'"]');
+      if(a){ if(live){a.innerHTML='<b class="live">지금 진행 중!</b>';} else {a.innerHTML=(b.kind==='deadline'?'마감까지 ':'시작까지 ')+'<b>'+t.text+'</b>';} }
+      var c=document.querySelector('[data-cd2="'+b.id+'"]'); if(c){ c.textContent=live?'진행 중!':t.text; c.classList.toggle('live',live); }
+      var l=document.querySelector('[data-cdl="'+b.id+'"]'); if(l) l.textContent=live?'전투 시작 시간':'시작까지';
+      var p=document.querySelector('[data-prog="'+b.id+'"]'); if(p) p.style.width=(live?100:((1-ms/WEEK)*100)).toFixed(2)+'%';
+      if(b.apply){
+        var ap=document.querySelector('[data-ap="'+b.id+'"]');
+        if(ap){
+          /* 신청 마감이 시작보다 먼저 오면(=이번 회차 신청 중) 남은 시간, 아니면 마감됨 */
+          var am=T.untilNext(b.apply,now);
+          ap.textContent=(am<ms&&!live)?'신청 마감까지 '+T.fmt(am).text:'이번 회차 신청은 마감됐어요';
+        }
+      }
     });
   }
   tick(); setInterval(tick,1000);

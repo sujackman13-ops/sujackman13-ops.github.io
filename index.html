@@ -145,8 +145,8 @@ footer{background:#111330;color:#7d80a8;font-size:12px;text-align:center;padding
     dEl.textContent=p.year+'. '+p.month+'. '+p.day+' ('+p.weekday+')';
     tEl.textContent=ft.format(n).replace(/^24/,'00');
     if(window.BattleTime){var s=BattleTime.soonest(n.getTime());
-      document.getElementById('nxName').textContent=(s.b.kind==='deadline'?'요신·결계지 주간 마감까지':s.b.name+'까지');
-      document.getElementById('nxCd').textContent=BattleTime.fmt(s.ms).text;}}
+      document.getElementById('nxName').textContent=s.live?s.b.name:(s.b.kind==='deadline'?'요신·결계지 주간 마감까지':s.b.name+'까지');
+      document.getElementById('nxCd').textContent=s.live?'지금 전투 시작!':BattleTime.fmt(s.ms).text;}}
   tick();setInterval(tick,1000);
 
   /* 별 반짝임 */
