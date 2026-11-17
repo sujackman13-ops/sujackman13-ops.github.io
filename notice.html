@@ -6,67 +6,112 @@
 <title>문파 공지 · 짐승특공대</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Gowun+Batang:wght@700&family=Noto+Sans+KR:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="site.css">
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#16183a;color:#eef0ff;font-family:"Noto Sans KR",system-ui,sans-serif;line-height:1.6}
-.head{padding:48px 20px 28px;text-align:center;background:linear-gradient(180deg,#1b1d4d,#16183a)}
-.head h1{font-family:"Do Hyeon",sans-serif;font-weight:400;font-size:clamp(32px,6vw,44px);margin:0;color:#fff}
-.head p{color:#a9acd0;margin:8px 0 0;font-size:14px}
-.wrap{max-width:900px;margin:0 auto;padding:8px 20px 64px;display:flex;flex-direction:column;gap:20px}
-.card{background:#1f2350;border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:16px}
-.card h2{font-family:"Do Hyeon",sans-serif;font-weight:400;font-size:24px;margin:0;color:#fff;display:flex;align-items:center;gap:10px}
-.card h2 .no{display:inline-grid;place-items:center;width:32px;height:32px;border-radius:9px;background:#e8a85a;color:#2a160a;font-size:18px}
-.card ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
-.tip{background:rgba(255,217,138,.1);border-left:3px solid #ffd98a;border-radius:6px;padding:10px 14px;font-size:14px;color:#f3e6c4}
-.tip b{color:#ffd98a}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+body{margin:0;background:#14163a;color:#eef0ff;font-family:"Noto Sans KR",system-ui,sans-serif;line-height:1.6}
+:root{--sched:#9b6bff;--join:#3fc7b4;--reward:#f2b84b;--warn:#ff8a7a;--card:#1d2152;--card2:#252a62;--muted:#b3b7df}
+.serif{font-family:"Gowun Batang",serif;font-weight:700}
 
-/* 일정 */
+/* ── 상단 배너 ── */
+.top{position:relative;overflow:hidden;text-align:center;padding:56px 20px 40px;
+  background:radial-gradient(ellipse 50% 80% at 70% 0%,rgba(170,140,220,.35),transparent 70%),linear-gradient(180deg,#1b1d4d,#2b3478 70%,#14163a)}
+#sky{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.top-in{position:relative;display:flex;flex-direction:column;align-items:center;gap:10px}
+.top h1{margin:0;font-size:clamp(40px,8vw,72px);line-height:1.05;color:#fff;text-shadow:0 0 26px rgba(190,200,255,.45)}
+.top .lead{margin:0;color:#d9d6f5;font-size:15px}
+.next{margin-top:18px;display:flex;flex-direction:column;align-items:center;gap:4px;padding:18px 34px;border-radius:16px;
+  background:rgba(12,14,40,.55);border:1px solid rgba(255,217,138,.35);box-shadow:0 0 40px rgba(255,190,100,.12)}
+.next .lbl{font-size:13px;letter-spacing:.12em;color:#ffd98a}
+.next .nm{font-size:clamp(20px,3vw,26px);color:#fff}
+.next .cd{font-size:clamp(36px,7vw,60px);line-height:1.05;color:#fff;font-variant-numeric:tabular-nums;letter-spacing:.04em;text-shadow:0 0 18px rgba(255,217,138,.45)}
+.next .at{font-size:13px;color:var(--muted)}
+.links{margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:999px;font-weight:700;font-size:14px;text-decoration:none;transition:transform .2s,box-shadow .2s}
+.btn:hover{transform:translateY(-2px)}
+.btn.kakao{background:#fee500;color:#191600;box-shadow:0 4px 18px rgba(254,229,0,.25)}
+.btn.discord{background:#5865f2;color:#fff;box-shadow:0 4px 18px rgba(88,101,242,.35)}
+
+.wrap{max-width:1040px;margin:0 auto;padding:28px 20px 72px;display:flex;flex-direction:column;gap:28px}
+.sec-t{font-family:"Do Hyeon",sans-serif;font-weight:400;font-size:26px;margin:0 0 12px;color:#fff}
+
+/* ── 목차 ── */
+.toc{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.ti{--c:#fff;position:relative;display:flex;flex-direction:column;gap:8px;padding:18px 16px 16px;border-radius:16px;text-decoration:none;color:#fff;
+  background:linear-gradient(170deg,color-mix(in srgb,var(--c) 22%,#1d2152),#1d2152 70%);border:1px solid color-mix(in srgb,var(--c) 40%,transparent);transition:transform .2s,box-shadow .2s}
+.ti:hover{transform:translateY(-4px);box-shadow:0 10px 30px color-mix(in srgb,var(--c) 30%,transparent)}
+.ti .num{position:absolute;top:12px;right:14px;font-family:"Do Hyeon",sans-serif;font-size:34px;line-height:1;color:color-mix(in srgb,var(--c) 70%,transparent);opacity:.6}
+.ti svg.emb{width:54px;height:66px}
+.ti .nm{font-family:"Do Hyeon",sans-serif;font-size:22px}
+.ti .wh{font-size:12.5px;color:var(--muted)}
+.ti .key{font-size:13px;font-weight:700;color:var(--c)}
+
+/* ── 공지 카드 ── */
+.bt{--c:#fff;background:var(--card);border:1px solid rgba(255,255,255,.07);border-radius:18px;overflow:hidden}
+.bt-head{display:flex;gap:16px;align-items:center;padding:20px 22px;background:linear-gradient(90deg,color-mix(in srgb,var(--c) 26%,#1d2152),#1d2152 75%);border-bottom:3px solid color-mix(in srgb,var(--c) 70%,transparent)}
+.bt-head svg.emb{width:62px;height:76px;flex:none;filter:drop-shadow(0 4px 10px rgba(0,0,0,.35))}
+.bt-head .tt{display:flex;flex-direction:column;gap:6px;min-width:0;flex:1}
+.bt-head h3{margin:0;font-family:"Do Hyeon",sans-serif;font-weight:400;font-size:clamp(26px,4vw,34px);line-height:1.1;color:#fff;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.bt-head h3 .no{font-size:15px;color:var(--c);letter-spacing:.08em}
+.bt-head .sub{font-size:13.5px;color:var(--muted)}
+.bt-body{padding:22px;display:flex;flex-direction:column;gap:16px}
+.rule{border-left:3px solid var(--c);background:color-mix(in srgb,var(--c) 12%,transparent);border-radius:6px;padding:11px 14px;font-size:14.5px}
+.rule b{color:var(--c)}
+
+/* 1. 일정 */
 .sched{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-.ev{background:#262b62;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:4px}
-.ev .day{font-family:"Do Hyeon",sans-serif;font-size:30px;line-height:1;color:#ffd98a}
-.ev .day small{font-size:18px;color:#f3e6c4;margin-left:4px}
-.ev .nm{font-weight:700;font-size:15px;color:#fff}
-.ev .sub{font-size:12px;color:#b9bce0}
-.ev.free .day{font-size:22px}
+.ev{--e:#fff;display:flex;gap:14px;align-items:center;padding:16px;border-radius:14px;text-decoration:none;color:#fff;background:var(--card2);border:1px solid color-mix(in srgb,var(--e) 35%,transparent);transition:transform .2s,border-color .2s}
+.ev:hover{transform:translateY(-3px);border-color:var(--e)}
+.ev .day{flex:none;width:64px;height:64px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:color-mix(in srgb,var(--e) 22%,#1d2152);color:var(--e)}
+.ev .day b{font-family:"Gowun Batang",serif;font-size:28px;line-height:1}
+.ev .day small{font-size:12px;font-weight:700}
+.ev .day.free b{font-size:17px}
+.ev .tx{display:flex;flex-direction:column;gap:2px;min-width:0}
+.ev .nm{font-family:"Do Hyeon",sans-serif;font-size:20px;line-height:1.2;word-break:keep-all}
+.ev .sb{font-size:12.5px;color:var(--muted)}
+.ev .cd{font-size:12.5px;font-weight:700;color:var(--e);font-variant-numeric:tabular-nums}
 
-/* 가입 기준 */
+/* 2. 가입 기준 */
 .rules{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
-@media (max-width:900px){.rules{grid-template-columns:repeat(2,minmax(0,1fr))}}
-.rule{background:#262b62;border-radius:12px;padding:16px 10px;display:flex;flex-direction:column;gap:6px;text-align:center;align-items:center}
-.rule .ic{font-size:26px;line-height:1}
-.rule .big{font-family:"Do Hyeon",sans-serif;font-size:21px;word-break:keep-all;color:#fff;line-height:1.2}
-.rule .sub{font-size:13px;color:#b9bce0}
-.rule.warn .big{color:#ff9a86}
-.rule .must{color:#ffd98a}
-.kakao{margin-top:6px;display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:999px;background:#fee500;color:#191600;font-weight:700;font-size:14px;text-decoration:none;transition:transform .2s}
-.kakao:hover,.discord:hover{transform:translateY(-2px)}
-.discord{margin-top:6px;display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:999px;background:#5865f2;color:#fff;font-weight:700;font-size:14px;text-decoration:none;transition:transform .2s}
-.welcome{font-size:14px;color:#cfd2f0;display:flex;flex-direction:column;gap:6px}
+.rc{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:20px 12px 18px;border-radius:14px;background:var(--card2);border:1px solid rgba(255,255,255,.06)}
+.rc .step{position:absolute;top:10px;left:12px;font-family:"Do Hyeon",sans-serif;font-size:13px;color:var(--join);opacity:.8}
+.rc .ic{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font-size:24px;background:color-mix(in srgb,var(--join) 18%,transparent);border:1px solid color-mix(in srgb,var(--join) 45%,transparent)}
+.rc .big{font-family:"Gowun Batang",serif;font-weight:700;font-size:19px;color:#fff;line-height:1.3;word-break:keep-all}
+.rc .sm{font-size:13px;color:var(--muted)}
+.rc .must{color:#ffd98a;font-weight:700}
+.rc .btn{margin-top:4px;padding:7px 14px;font-size:13px}
+.rc.warn .ic{background:color-mix(in srgb,var(--warn) 18%,transparent);border-color:color-mix(in srgb,var(--warn) 50%,transparent)}
+.rc.warn .big{color:var(--warn)}
+.rc.warn .step{color:var(--warn)}
+.welcome{display:flex;gap:12px;align-items:center;padding:14px 16px;border-radius:12px;background:linear-gradient(90deg,rgba(255,217,138,.12),transparent);font-size:14.5px}
+.welcome .ic{font-size:26px}
 
-/* 기여도 */
-.pts{display:flex;flex-direction:column;gap:10px}
-.pt{display:grid;grid-template-columns:minmax(0,190px) 1fr 64px;gap:12px;align-items:center;font-size:14px}
-.pt .lb{color:#dfe1f7}
-.pt .tr{height:14px;background:#2c3168;border-radius:99px;overflow:hidden;display:flex}
-.pt .tr i{display:block;height:100%}
-.pt .tr .a{background:#e8a85a}
-.pt .tr .b{background:#8a6a3a}
-.pt .vl{text-align:right;font-weight:700;font-variant-numeric:tabular-nums;color:#ffd98a}
-.goal{display:flex;flex-direction:column;gap:8px;background:#262b62;border-radius:12px;padding:16px}
-.goal .t{font-size:13px;color:#b9bce0;font-weight:700}
-.gauge{position:relative;height:30px;background:#2c3168;border-radius:8px;display:flex;overflow:hidden;font-size:12px;font-weight:700}
+/* 3. 기여도 */
+.pts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.ptc{--e:#fff;display:flex;flex-direction:column;gap:6px;padding:16px;border-radius:14px;background:var(--card2);border-top:3px solid var(--e)}
+.ptc .nm{font-size:13.5px;color:#dfe1f7;font-weight:500}
+.ptc .v{font-family:"Gowun Batang",serif;font-weight:700;font-size:34px;line-height:1;color:var(--e)}
+.ptc .v small{font-size:15px;margin-left:2px}
+.ptc .s{font-size:12px;color:var(--muted)}
+.goal{display:flex;flex-direction:column;gap:10px;padding:18px;border-radius:14px;background:linear-gradient(135deg,color-mix(in srgb,var(--reward) 16%,#1d2152),var(--card2));border:1px solid color-mix(in srgb,var(--reward) 35%,transparent)}
+.goal .t{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.goal .t .big{font-family:"Gowun Batang",serif;font-weight:700;font-size:26px;color:#ffd98a}
+.goal .t span{font-size:13.5px;color:var(--muted)}
+.gauge{position:relative;height:34px;background:#2c3168;border-radius:10px;display:flex;overflow:visible;font-size:12.5px;font-weight:700}
 .gauge span{display:flex;align-items:center;justify-content:center;white-space:nowrap}
-.gauge .c{background:#8a6a3a;color:#fff;width:33.3%}
-.gauge .m{background:#e8a85a;color:#2a160a;width:66.7%}
-.goal .line{font-size:14px}
+.gauge .c{background:#8a6a3a;color:#fff;width:33.3%;border-radius:10px 0 0 10px}
+.gauge .m{background:var(--reward);color:#2a160a;width:66.7%;border-radius:0 10px 10px 0}
+.gauge::after{content:"30점 달성";position:absolute;right:-2px;top:-22px;font-size:11px;color:#ffd98a}
+.goal .line{font-size:14.5px}
 .goal .line b{color:#ffd98a}
-.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:#b9bce0}
-.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
-.legend .la::before{background:#e8a85a}.legend .lb2::before{background:#8a6a3a}
-@media (max-width:640px){.sched{grid-template-columns:minmax(0,1fr)}.pt{grid-template-columns:1fr 54px}.pt .lb{grid-column:1/-1}}
-@media (max-width:480px){.rules{grid-template-columns:minmax(0,1fr)}}
+
+@media (max-width:900px){.rules,.pts{grid-template-columns:repeat(2,minmax(0,1fr))}.sched{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:640px){.toc{grid-template-columns:minmax(0,1fr)}.ti{flex-direction:row;align-items:center;gap:12px}.ti svg.emb{width:40px;height:50px}.ti .num{top:50%;transform:translateY(-50%)}
+  .bt-head svg.emb{width:50px;height:62px}.bt-body{padding:16px}.next{padding:16px 22px}}
+@media (max-width:420px){.rules{grid-template-columns:minmax(0,1fr)}.gauge{font-size:11px}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.ti,.ev,.btn{transition:none}}
 </style>
 </head>
 <body>
@@ -81,47 +126,131 @@ body{margin:0;background:#16183a;color:#eef0ff;font-family:"Noto Sans KR",system
   </nav>
 </header>
 
-<div class="head"><h1>문파 공지</h1><p>짐승특공대 문파원이라면 꼭 읽어 주세요.</p></div>
+<!-- 공지 문장 (깃발 모양 표식) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <path id="pennant" d="M6 2 H54 V58 L30 74 L6 58 Z"/>
+    <symbol id="ic-sched" viewBox="0 0 60 76"><use href="#pennant" fill="#3b2470" stroke="#9b6bff" stroke-width="3"/>
+      <rect x="15" y="17" width="30" height="28" rx="4" fill="none" stroke="#e9dcff" stroke-width="2.5"/><path d="M15 25 H45 M22 13 v8 M38 13 v8" stroke="#e9dcff" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="23" cy="32" r="2" fill="#e9dcff"/><circle cx="30" cy="32" r="2" fill="#e9dcff"/><circle cx="37" cy="32" r="2" fill="#9b6bff"/><circle cx="23" cy="39" r="2" fill="#e9dcff"/><circle cx="30" cy="39" r="2" fill="#e9dcff"/></symbol>
+    <symbol id="ic-join" viewBox="0 0 60 76"><use href="#pennant" fill="#143f45" stroke="#3fc7b4" stroke-width="3"/>
+      <circle cx="22" cy="23" r="6" fill="#bff3ea"/><circle cx="38" cy="23" r="6" fill="#bff3ea"/><path d="M11 45 q0 -12 11 -12 q11 0 11 12 M27 45 q0 -12 11 -12 q11 0 11 12" fill="#bff3ea" opacity=".85"/>
+      <path d="M30 52 l3 3 6 -7" fill="none" stroke="#3fc7b4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="ic-reward" viewBox="0 0 60 76"><use href="#pennant" fill="#4a3412" stroke="#f2b84b" stroke-width="3"/>
+      <path d="M20 15 H40 V27 a10 10 0 0 1 -20 0 Z" fill="#ffe7a8"/><path d="M20 18 h-5 a5 5 0 0 0 5 9 M40 18 h5 a5 5 0 0 1 -5 9" fill="none" stroke="#ffe7a8" stroke-width="2.2"/>
+      <path d="M30 37 v6 M23 48 H37 V44 H23 Z" fill="#ffe7a8" stroke="#ffe7a8" stroke-width="2" stroke-linejoin="round"/><path d="M27 21 l3 -3 3 3 -3 6 z" fill="#c98a1c"/></symbol>
+  </defs>
+</svg>
+
+<section class="top">
+  <canvas id="sky" aria-hidden="true"></canvas>
+  <div class="top-in">
+    <h1 class="serif">문파 공지</h1>
+    <p class="lead">짐승특공대 문파원이라면 꼭 읽어 주세요.</p>
+    <div class="next" aria-live="off">
+      <span class="lbl">이번 주 기여도 마감</span>
+      <span class="nm serif">주간 30점 채우기까지</span>
+      <span class="cd serif" id="dl">--:--:--</span>
+      <span class="at" id="dlAt">매주 화요일 20:00 · 한국 시간</span>
+    </div>
+    <div class="links">
+      <a class="btn kakao" href="https://open.kakao.com/o/gR1uGdSi" target="_blank" rel="noopener">💬 오픈톡 입장 ↗</a>
+      <a class="btn discord" href="https://discord.gg/FQfqeSweJk" target="_blank" rel="noopener">🎧 디스코드 입장 ↗</a>
+    </div>
+  </div>
+</section>
 
 <main class="wrap">
 
-  <section class="card" aria-labelledby="s1">
-    <h2 id="s1"><span class="no">1</span>문파 콘텐츠 일정</h2>
-    <div class="sched">
-      <div class="ev"><span class="day">금<small>20시</small></span><span class="nm">신기 쟁탈전</span><span class="sub">매주 금요일</span></div>
-      <div class="ev"><span class="day">토<small>20시</small></span><span class="nm">미혹의 정원</span><span class="sub">매주 토요일</span></div>
-      <div class="ev free"><span class="day">수시 오픈</span><span class="nm">요신 토벌령 · 결계지 방어</span><span class="sub">주간 마감 화요일 20시</span></div>
-    </div>
-    <div class="tip">일정 상 참여 못 하실 경우 <b>분신 등록</b>, 직접 참여하실 땐 <b>분신 해제</b>!</div>
+  <section aria-labelledby="toc-h">
+    <h2 class="sec-t" id="toc-h">공지 목차</h2>
+    <nav class="toc" aria-label="문파 공지 목차">
+      <a class="ti" href="#sched" style="--c:var(--sched)"><span class="num">1</span><svg class="emb"><use href="#ic-sched"/></svg><span><span class="nm">문파 콘텐츠 일정</span><br><span class="key">금·토 20시 · 수시 오픈</span></span></a>
+      <a class="ti" href="#join" style="--c:var(--join)"><span class="num">2</span><svg class="emb"><use href="#ic-join"/></svg><span><span class="nm">가입 · 활동 기준</span><br><span class="key">전투력 10만+ · 3일 규칙</span></span></a>
+      <a class="ti" href="#reward" style="--c:var(--reward)"><span class="num">3</span><svg class="emb"><use href="#ic-reward"/></svg><span><span class="nm">주간 기여도 · 보상</span><br><span class="key">30점 이상이면 보상</span></span></a>
+    </nav>
   </section>
 
-  <section class="card" aria-labelledby="s2">
-    <h2 id="s2"><span class="no">2</span>가입 · 활동 기준</h2>
-    <div class="rules">
-      <div class="rule"><span class="ic" aria-hidden="true">⚔️</span><span class="big">전투력 10만+</span><span class="sub">가입 조건</span></div>
-      <div class="rule"><span class="ic" aria-hidden="true">💬</span><span class="big">3일 안 오픈단톡방</span><span class="sub"><b class="must">입장 필수!</b></span><a class="kakao" href="https://open.kakao.com/o/gR1uGdSi" target="_blank" rel="noopener">오픈톡 입장 ↗</a></div>
-      <div class="rule"><span class="ic" aria-hidden="true">🎧</span><span class="big">문파 디스코드</span><span class="sub">함께 소통해요</span><a class="discord" href="https://discord.gg/FQfqeSweJk" target="_blank" rel="noopener">디스코드 입장 ↗</a></div>
-      <div class="rule warn"><span class="ic" aria-hidden="true">👋</span><span class="big">3일 이상 미접속</span><span class="sub">사요나라입니다</span></div>
+  <!-- 1. 일정 -->
+  <article class="bt" id="sched" style="--c:var(--sched)">
+    <div class="bt-head">
+      <svg class="emb" aria-hidden="true"><use href="#ic-sched"/></svg>
+      <div class="tt"><h3><span class="no">01</span>문파 콘텐츠 일정</h3><span class="sub">카드를 누르면 문파 전투 탭에서 자세히 볼 수 있어요.</span></div>
     </div>
-    <div class="tip">단, 휴가·출장·바쁜 일정은 <b>단톡방 또는 운영진</b>에게 언질해 주시면 예외 적용하겠습니다~</div>
-    <div class="welcome"><span>사요나라 된 분도 다시 활동하실 수 있으면 언제든 재가입 환영하겠습니다. 🙌</span></div>
-  </section>
+    <div class="bt-body">
+      <div class="sched">
+        <a class="ev" href="battle.html#artifact" style="--e:#f2b84b"><span class="day"><b>금</b><small>20시</small></span><span class="tx"><span class="nm">신기 쟁탈전</span><span class="sb">매주 금요일</span><span class="cd" data-to="artifact">-</span></span></a>
+        <a class="ev" href="battle.html#garden" style="--e:#ff8fb5"><span class="day"><b>토</b><small>20시</small></span><span class="tx"><span class="nm">미혹의 정원</span><span class="sb">매주 토요일</span><span class="cd" data-to="garden">-</span></span></a>
+        <a class="ev" href="battle.html#yoshin" style="--e:#3fc7b4"><span class="day free"><b>수시</b><small>오픈</small></span><span class="tx"><span class="nm">요신 토벌령 · 결계지 방어</span><span class="sb">주간 마감 화요일 20시</span><span class="cd" data-to="yoshin">-</span></span></a>
+      </div>
+      <div class="rule">일정 상 참여 못 하실 경우 <b>분신 등록</b>, 직접 참여하실 땐 <b>분신 해제</b>!</div>
+    </div>
+  </article>
 
-  <section class="card" aria-labelledby="s3">
-    <h2 id="s3"><span class="no">3</span>주간 기여도 · 보상</h2>
-    <div class="pts" role="img" aria-label="미혹의 정원·신기 쟁탈전 20점, 요신 토벌령·결계지 방어 직접 10점 분신 5점, 문파 임무 1회 1점">
-      <div class="pt"><span class="lb">미혹의 정원 · 신기 쟁탈전</span><span class="tr"><i class="a" style="width:100%"></i></span><span class="vl">20점</span></div>
-      <div class="pt"><span class="lb">요신 토벌령 · 결계지 방어 (직접)</span><span class="tr"><i class="a" style="width:50%"></i></span><span class="vl">10점</span></div>
-      <div class="pt"><span class="lb">요신 토벌령 · 결계지 방어 (분신)</span><span class="tr"><i class="b" style="width:25%"></i></span><span class="vl">5점</span></div>
-      <div class="pt"><span class="lb">문파 임무</span><span class="tr"><i class="a" style="width:5%"></i></span><span class="vl">1회 1점</span></div>
+  <!-- 2. 가입 기준 -->
+  <article class="bt" id="join" style="--c:var(--join)">
+    <div class="bt-head">
+      <svg class="emb" aria-hidden="true"><use href="#ic-join"/></svg>
+      <div class="tt"><h3><span class="no">02</span>가입 · 활동 기준</h3><span class="sub">함께 오래 즐기기 위한 짐승특공대의 약속이에요.</span></div>
     </div>
-    <div class="goal">
-      <span class="t">보상 기준: 주간 30점 이상</span>
-      <div class="gauge" role="img" aria-label="분신 2개 10점과 문파 임무 20점으로 30점"><span class="c">분신 2개 · 10점</span><span class="m">문파 임무 20회 · 20점</span></div>
-      <span class="line">분신 2개 + 문파 임무만으로도 채울 수 있는 점수예요. 보상은 <b>순위에 따라 차등 지급</b>됩니다!</span>
+    <div class="bt-body">
+      <div class="rules">
+        <div class="rc"><span class="step">STEP 1</span><span class="ic" aria-hidden="true">⚔️</span><span class="big">전투력 10만+</span><span class="sm">가입 조건</span></div>
+        <div class="rc"><span class="step">STEP 2</span><span class="ic" aria-hidden="true">💬</span><span class="big">3일 안 오픈단톡방</span><span class="sm must">입장 필수!</span><a class="btn kakao" href="https://open.kakao.com/o/gR1uGdSi" target="_blank" rel="noopener">오픈톡 입장 ↗</a></div>
+        <div class="rc"><span class="step">STEP 3</span><span class="ic" aria-hidden="true">🎧</span><span class="big">문파 디스코드</span><span class="sm">함께 소통해요</span><a class="btn discord" href="https://discord.gg/FQfqeSweJk" target="_blank" rel="noopener">디스코드 입장 ↗</a></div>
+        <div class="rc warn"><span class="step">주의</span><span class="ic" aria-hidden="true">👋</span><span class="big">3일 이상 미접속</span><span class="sm">사요나라입니다</span></div>
+      </div>
+      <div class="rule">단, 휴가·출장·바쁜 일정은 <b>단톡방 또는 운영진</b>에게 언질해 주시면 예외 적용하겠습니다~</div>
+      <div class="welcome"><span class="ic" aria-hidden="true">🙌</span><span>사요나라 된 분도 다시 활동하실 수 있으면 언제든 재가입 환영하겠습니다.</span></div>
     </div>
-  </section>
+  </article>
+
+  <!-- 3. 기여도 -->
+  <article class="bt" id="reward" style="--c:var(--reward)">
+    <div class="bt-head">
+      <svg class="emb" aria-hidden="true"><use href="#ic-reward"/></svg>
+      <div class="tt"><h3><span class="no">03</span>주간 기여도 · 보상</h3><span class="sub">매주 화요일 20시에 마감해요.</span></div>
+    </div>
+    <div class="bt-body">
+      <div class="pts">
+        <div class="ptc" style="--e:#f2b84b"><span class="nm">미혹의 정원 · 신기 쟁탈전</span><span class="v">20<small>점</small></span><span class="s">참여 1회</span></div>
+        <div class="ptc" style="--e:#3fc7b4"><span class="nm">요신 토벌령 · 결계지 방어</span><span class="v">10<small>점</small></span><span class="s">직접 참여</span></div>
+        <div class="ptc" style="--e:#7d8bd6"><span class="nm">요신 토벌령 · 결계지 방어</span><span class="v">5<small>점</small></span><span class="s">분신 참여</span></div>
+        <div class="ptc" style="--e:#ff8fb5"><span class="nm">문파 임무</span><span class="v">1<small>점</small></span><span class="s">1회당</span></div>
+      </div>
+      <div class="goal">
+        <div class="t"><span class="big">30점 이상이면 보상!</span><span>분신 2개 + 문파 임무로 채울 수 있는 점수</span></div>
+        <div class="gauge" role="img" aria-label="분신 2개 10점과 문파 임무 20점으로 30점"><span class="c">분신 2개 · 10점</span><span class="m">문파 임무 20회 · 20점</span></div>
+        <span class="line">보상은 <b>순위에 따라 차등 지급</b>드립니다!</span>
+      </div>
+    </div>
+  </article>
 
 </main>
+
+<script src="schedule.js?v=2"></script>
+<script>
+(function(){
+  var T=window.BattleTime;
+  function tick(){
+    var now=Date.now();
+    document.getElementById('dl').textContent=T.fmt(T.untilNext(window.BATTLES[0],now)).text;
+    window.BATTLES.forEach(function(b){
+      var el=document.querySelector('[data-to="'+b.id+'"]'); if(!el) return;
+      if(T.isLive(b,now)){el.textContent='지금 진행 중!';return;}
+      el.textContent=(b.kind==='deadline'?'마감까지 ':'시작까지 ')+T.fmt(T.untilNext(b,now)).text;
+    });
+  }
+  tick(); setInterval(tick,1000);
+
+  var c=document.getElementById('sky'),x=c.getContext('2d'),dpr=Math.min(window.devicePixelRatio||1,2),st=[];
+  var still=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function size(){c.width=c.offsetWidth*dpr;c.height=c.offsetHeight*dpr;st=[];var n=Math.round(c.offsetWidth*c.offsetHeight/2400);
+    for(var i=0;i<n;i++)st.push({x:Math.random()*c.width,y:Math.random()*c.height,r:(Math.random()*1.2+.3)*dpr,p:Math.random()*6.28,s:Math.random()*.02+.005});}
+  function draw(){x.clearRect(0,0,c.width,c.height);for(var i=0;i<st.length;i++){var s=st[i];s.p+=s.s;x.globalAlpha=.3+.7*Math.abs(Math.sin(s.p));x.fillStyle='#fff';x.beginPath();x.arc(s.x,s.y,s.r,0,6.28);x.fill();}
+    if(!still)requestAnimationFrame(draw);}
+  size();draw();window.addEventListener('resize',function(){size();if(still)draw();});
+})();
+</script>
 </body>
 </html>
