@@ -11,3 +11,4 @@
 .gnb nav a.on{color:#ffd98a;border-bottom-color:#ffd98a}
 @media (max-width:560px){.gnb{gap:16px}.gnb .logo small{display:none}.gnb nav{gap:16px}.gnb nav a{font-size:14px}}
 @media (max-width:420px){.gnb .pc{display:none}.gnb{gap:12px}.gnb nav{gap:12px}}
+@media (max-width:480px){.gnb .logo{display:none}.gnb nav{gap:14px}.gnb nav a{font-size:14px}}

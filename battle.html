@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>문파 전투 · 짐승특공대</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Gowun+Batang:wght@700&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="site.css">
+<style>
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+body{margin:0;background:#14163a;color:#eef0ff;font-family:"Noto Sans KR",system-ui,sans-serif;line-height:1.6}
+:root{--yoshin:#9b6bff;--barrier:#3fc7b4;--garden:#ff8fb5;--artifact:#f2b84b;--card:#1d2152;--card2:#252a62;--muted:#b3b7df}
+.serif{font-family:"Gowun Batang",serif;font-weight:700}
+
+/* ── 상단 배너 + 다음 전투 ── */
+.top{position:relative;overflow:hidden;text-align:center;padding:56px 20px 40px;
+  background:radial-gradient(ellipse 50% 80% at 70% 0%,rgba(170,140,220,.35),transparent 70%),linear-gradient(180deg,#1b1d4d,#2b3478 70%,#14163a)}
+#sky{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.top-in{position:relative;display:flex;flex-direction:column;align-items:center;gap:10px}
+.top h1{margin:0;font-size:clamp(40px,8vw,72px);line-height:1.05;color:#fff;text-shadow:0 0 26px rgba(190,200,255,.45)}
+.top .lead{margin:0;color:#d9d6f5;font-size:15px}
+.next{margin-top:18px;display:flex;flex-direction:column;align-items:center;gap:4px;padding:18px 34px;border-radius:16px;
+  background:rgba(12,14,40,.55);border:1px solid rgba(255,217,138,.35);box-shadow:0 0 40px rgba(255,190,100,.12)}
+.next .lbl{font-size:13px;letter-spacing:.12em;color:#ffd98a}
+.next .nm{font-size:clamp(20px,3vw,26px);color:#fff}
+.next .cd{font-size:clamp(36px,7vw,60px);line-height:1.05;color:#fff;font-variant-numeric:tabular-nums;letter-spacing:.04em;text-shadow:0 0 18px rgba(255,217,138,.45)}
+.next .at{font-size:13px;color:var(--muted)}
+
+.wrap{max-width:1040px;margin:0 auto;padding:28px 20px 72px;display:flex;flex-direction:column;gap:28px}
+.sec-t{font-family:"Do Hyeon",sans-serif;font-weight:400;font-size:26px;margin:0 0 12px;color:#fff}
+
+/* ── 주간 시간표 ── */
+.week{background:var(--card);border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:20px}
+.wk-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.wd{position:relative;border-radius:10px;background:var(--card2);padding:10px 6px 12px;min-height:118px;display:flex;flex-direction:column;align-items:center;gap:6px}
+.wd .dn{font-family:"Do Hyeon",sans-serif;font-size:20px;color:#cfd2f5}
+.wd.today{outline:2px solid #ffd98a;background:#2d3270}
+.wd.today .dn{color:#ffd98a}
+.wd.today::after{content:"오늘";position:absolute;top:-9px;font-size:10px;font-weight:700;background:#ffd98a;color:#2a160a;padding:0 7px;border-radius:99px}
+.pill{width:100%;border-radius:7px;padding:4px 4px;font-size:11.5px;font-weight:700;text-align:center;line-height:1.3;color:#14163a}
+.pill small{display:block;font-weight:500;font-size:10.5px;opacity:.85}
+.pill.yb{background:linear-gradient(90deg,var(--yoshin),var(--barrier));color:#fff}
+.pill.g{background:var(--garden)}
+.pill.a{background:var(--artifact)}
+.pill.reset{background:transparent;border:1px dashed #6e74b8;color:#b3b7df}
+.wk-note{margin:12px 0 0;font-size:12.5px;color:var(--muted)}
+
+/* ── 목차 ── */
+.toc{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.ti{--c:#fff;position:relative;display:flex;flex-direction:column;gap:8px;padding:18px 16px 16px;border-radius:16px;text-decoration:none;color:#fff;
+  background:linear-gradient(170deg,color-mix(in srgb,var(--c) 22%,#1d2152),#1d2152 70%);border:1px solid color-mix(in srgb,var(--c) 40%,transparent);transition:transform .2s,box-shadow .2s}
+.ti:hover{transform:translateY(-4px);box-shadow:0 10px 30px color-mix(in srgb,var(--c) 30%,transparent)}
+.ti .num{position:absolute;top:12px;right:14px;font-family:"Do Hyeon",sans-serif;font-size:34px;line-height:1;color:color-mix(in srgb,var(--c) 70%,transparent);opacity:.6}
+.ti svg.emb{width:54px;height:66px}
+.ti .nm{font-family:"Do Hyeon",sans-serif;font-size:22px}
+.ti .wh{font-size:12.5px;color:var(--muted)}
+.ti .cd{font-size:13px;font-weight:700;color:var(--c);font-variant-numeric:tabular-nums}
+.ti .cd b{font-family:"Gowun Batang",serif;font-size:18px}
+
+/* ── 전투 상세 ── */
+.bt{--c:#fff;background:var(--card);border:1px solid rgba(255,255,255,.07);border-radius:18px;overflow:hidden}
+.bt-head{display:flex;gap:16px;align-items:center;padding:20px 22px;background:linear-gradient(90deg,color-mix(in srgb,var(--c) 26%,#1d2152),#1d2152 75%);border-bottom:1px solid rgba(255,255,255,.06)}
+.bt-head svg.emb{width:62px;height:76px;flex:none;filter:drop-shadow(0 4px 10px rgba(0,0,0,.35))}
+.bt-head .tt{display:flex;flex-direction:column;gap:6px;min-width:0;flex:1}
+.bt-head h3{margin:0;font-family:"Do Hyeon",sans-serif;font-weight:400;font-size:clamp(26px,4vw,34px);line-height:1.1;color:#fff;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.bt-head h3 .no{font-size:15px;color:var(--c);letter-spacing:.08em}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:500;padding:3px 10px;border-radius:999px;background:rgba(10,12,35,.45);border:1px solid rgba(255,255,255,.12);color:#e3e5fb;white-space:nowrap}
+.chip.k{border-color:color-mix(in srgb,var(--c) 70%,transparent);color:var(--c);font-weight:700}
+.bt-cd{flex:none;text-align:right;display:flex;flex-direction:column;gap:2px}
+.bt-cd .l{font-size:12px;color:var(--muted)}
+.bt-cd .v{font-family:"Gowun Batang",serif;font-weight:700;font-size:28px;line-height:1.1;color:#fff;font-variant-numeric:tabular-nums}
+.bt-body{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:22px;padding:22px}
+.bt-body p{margin:0}
+.desc{display:flex;flex-direction:column;gap:14px}
+.desc .goal{font-size:16px;color:#fff}
+.desc ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:14px;color:#dfe1f7}
+.rule{border-left:3px solid var(--c);background:color-mix(in srgb,var(--c) 12%,transparent);border-radius:6px;padding:10px 14px;font-size:14px}
+.rule b{color:var(--c)}
+.score{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
+.score .bar{flex:1;height:10px;border-radius:99px;background:#2c3168;overflow:hidden;display:flex}
+.score .bar i{display:block;height:100%;background:var(--c)}
+.score .bar i.o{opacity:.45}
+.score b{color:#fff;font-variant-numeric:tabular-nums}
+figure{margin:0;border-radius:14px;overflow:hidden;background:#0f1130;border:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column}
+figure img{display:block;width:100%;height:300px;object-fit:cover;object-position:center 30%}
+figure svg.scene{display:block;width:100%;height:300px}
+figcaption{font-size:12px;color:var(--muted);padding:8px 12px}
+.prog{height:6px;background:#2c3168}
+.prog i{display:block;height:100%;background:var(--c);transition:width 1s linear}
+
+.src{font-size:12px;color:#8a8db8;line-height:1.7}
+.src a{color:#ffd98a}
+
+@media (max-width:900px){.toc{grid-template-columns:repeat(2,minmax(0,1fr))}.bt-body{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:640px){
+  .wk-days{grid-template-columns:minmax(0,1fr);gap:8px}
+  .wd{min-height:0;flex-direction:row;align-items:center;gap:10px;padding:10px 12px}
+  .wd .dn{width:28px;flex:none}
+  .wd:not(:has(.pill)):not(.today){display:none}
+  .wd.today::after{position:static;order:3;margin-left:auto}
+  .pill{width:auto;flex:1;text-align:left;padding:6px 10px;font-size:13px}
+  .pill small{display:inline;margin-left:6px;font-size:12px}
+  .bt-head{flex-wrap:wrap}.bt-cd{text-align:left;width:100%;flex-direction:row;align-items:baseline;gap:10px}
+  .bt-head svg.emb{width:50px;height:62px}
+  figure img,figure svg.scene{height:220px}
+}
+@media (max-width:420px){.toc{gap:10px}.ti{padding:14px 12px}.ti .nm{font-size:19px}.ti .num{font-size:26px}.ti .cd b{font-size:15px}.ti svg.emb{width:44px;height:54px}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.ti,.prog i{transition:none}}
+</style>
+</head>
+<body>
+<header class="gnb">
+  <a class="logo" href="index.html">짐승특공대<small>도깨비의 세계 문파</small></a>
+  <nav>
+    <a href="index.html">홈</a>
+    <a href="notice.html">문파 공지</a>
+    <a href="battle.html" class="on">문파 전투</a>
+    <a href="updates.html">업데이트</a>
+    <a href="https://forum.kakaogames.com/dokkaebi" target="_blank" rel="noopener"><span class="pc">공식 </span>커뮤니티 ↗</a>
+  </nav>
+</header>
+
+<!-- 문장 SVG 정의 (네 전투 공용 깃발 모양) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <path id="pennant" d="M6 2 H54 V58 L30 74 L6 58 Z"/>
+    <symbol id="ic-yoshin" viewBox="0 0 60 76"><use href="#pennant" fill="#3b2470" stroke="#9b6bff" stroke-width="3"/><circle cx="30" cy="32" r="17" fill="#9b6bff" opacity=".25"/>
+      <path d="M19 45 L39 19 M23 47 L43 21" stroke="#e9dcff" stroke-width="3.5" stroke-linecap="round"/><path d="M36 17 l7 2 -2 7" fill="none" stroke="#e9dcff" stroke-width="2.5" stroke-linejoin="round"/><circle cx="21" cy="24" r="3" fill="#e9dcff"/><circle cx="40" cy="43" r="2.4" fill="#e9dcff"/></symbol>
+    <symbol id="ic-barrier" viewBox="0 0 60 76"><use href="#pennant" fill="#143f45" stroke="#3fc7b4" stroke-width="3"/>
+      <circle cx="30" cy="32" r="15" fill="none" stroke="#bff3ea" stroke-width="2.5"/><circle cx="30" cy="32" r="8" fill="none" stroke="#bff3ea" stroke-width="2" stroke-dasharray="3 3"/><circle cx="30" cy="32" r="3" fill="#bff3ea"/>
+      <path d="M30 10 v6 M30 48 v6 M8 32 h6 M46 32 h6" stroke="#bff3ea" stroke-width="2.5" stroke-linecap="round"/></symbol>
+    <symbol id="ic-garden" viewBox="0 0 60 76"><use href="#pennant" fill="#4a1f3a" stroke="#ff8fb5" stroke-width="3"/>
+      <g transform="translate(30 31)" fill="#ffd3e2"><ellipse rx="5" ry="11" transform="rotate(0)"/><ellipse rx="5" ry="11" transform="rotate(72)"/><ellipse rx="5" ry="11" transform="rotate(144)"/><ellipse rx="5" ry="11" transform="rotate(216)"/><ellipse rx="5" ry="11" transform="rotate(288)"/></g>
+      <circle cx="30" cy="31" r="4.5" fill="#ff8fb5"/><path d="M18 52 q12 -6 24 0" fill="none" stroke="#ffd3e2" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="ic-artifact" viewBox="0 0 60 76"><use href="#pennant" fill="#4a3412" stroke="#f2b84b" stroke-width="3"/>
+      <path d="M30 13 L40 30 L30 47 L20 30 Z" fill="#ffe7a8"/><path d="M30 13 L30 47 M20 30 H40" stroke="#c98a1c" stroke-width="1.5"/>
+      <path d="M18 52 h24 M22 52 v-4 h16 v4" fill="none" stroke="#ffe7a8" stroke-width="2.5" stroke-linejoin="round"/><circle cx="30" cy="30" r="20" fill="none" stroke="#ffe7a8" stroke-width="1" opacity=".5"/></symbol>
+  </defs>
+</svg>
+
+<section class="top">
+  <canvas id="sky" aria-hidden="true"></canvas>
+  <div class="top-in">
+    <h1 class="serif">문파 전투</h1>
+    <p class="lead">짐승특공대가 함께 싸우는 네 개의 전장</p>
+    <div class="next" aria-live="off">
+      <span class="lbl">다음 문파 일정</span>
+      <span class="nm serif" id="nextName">-</span>
+      <span class="cd serif" id="nextCd">--:--:--</span>
+      <span class="at" id="nextAt"></span>
+    </div>
+  </div>
+</section>
+
+<main class="wrap">
+
+  <section aria-labelledby="wk-h">
+    <h2 class="sec-t" id="wk-h">이번 주 전투 시간표</h2>
+    <div class="week">
+      <div class="wk-days" id="week">
+        <div class="wd" data-d="1"><span class="dn">월</span></div>
+        <div class="wd" data-d="2"><span class="dn">화</span><span class="pill yb">20:00<small>요신·결계지 마감</small></span></div>
+        <div class="wd" data-d="3"><span class="dn">수</span><span class="pill reset">05:00<small>요신 시즌 갱신</small></span></div>
+        <div class="wd" data-d="4"><span class="dn">목</span></div>
+        <div class="wd" data-d="5"><span class="dn">금</span><span class="pill a">20:00<small>신기 쟁탈전</small></span></div>
+        <div class="wd" data-d="6"><span class="dn">토</span><span class="pill g">20:00<small>미혹의 정원</small></span></div>
+        <div class="wd" data-d="0"><span class="dn">일</span></div>
+      </div>
+      <p class="wk-note">요신 토벌령·결계지 방어는 수시로 열려요. 문파 주간 기여도는 화요일 20시에 마감합니다. 모든 시간은 한국 시간이에요.</p>
+    </div>
+  </section>
+
+  <section aria-labelledby="toc-h">
+    <h2 class="sec-t" id="toc-h">전장 목차</h2>
+    <nav class="toc" aria-label="문파 전투 목차">
+      <a class="ti" href="#yoshin" style="--c:var(--yoshin)"><span class="num">1</span><svg class="emb"><use href="#ic-yoshin"/></svg><span class="nm">요신 토벌령</span><span class="wh">수시 오픈 · 마감 화 20:00</span><span class="cd" data-cd="yoshin">마감까지 <b>-</b></span></a>
+      <a class="ti" href="#barrier" style="--c:var(--barrier)"><span class="num">2</span><svg class="emb"><use href="#ic-barrier"/></svg><span class="nm">결계지 방어</span><span class="wh">수시 오픈 · 마감 화 20:00</span><span class="cd" data-cd="barrier">마감까지 <b>-</b></span></a>
+      <a class="ti" href="#garden" style="--c:var(--garden)"><span class="num">3</span><svg class="emb"><use href="#ic-garden"/></svg><span class="nm">미혹의 정원</span><span class="wh">매주 토요일 20:00</span><span class="cd" data-cd="garden">시작까지 <b>-</b></span></a>
+      <a class="ti" href="#artifact" style="--c:var(--artifact)"><span class="num">4</span><svg class="emb"><use href="#ic-artifact"/></svg><span class="nm">신기 쟁탈전</span><span class="wh">매주 금요일 20:00</span><span class="cd" data-cd="artifact">시작까지 <b>-</b></span></a>
+    </nav>
+  </section>
+
+  <!-- 1. 요신 토벌령 -->
+  <article class="bt" id="yoshin" style="--c:var(--yoshin)">
+    <div class="bt-head">
+      <svg class="emb" aria-hidden="true"><use href="#ic-yoshin"/></svg>
+      <div class="tt">
+        <h3><span class="no">01</span>요신 토벌령</h3>
+        <div class="chips"><span class="chip k">수시 오픈</span><span class="chip">🌐 서버 그룹</span><span class="chip">⏱ 5분</span><span class="chip">👥 문파원 전부</span><span class="chip">시즌 갱신 매주 수 05:00</span></div>
+      </div>
+      <div class="bt-cd"><span class="l">문파 주간 마감까지</span><span class="v" data-cd2="yoshin">--:--:--</span></div>
+    </div>
+    <div class="prog"><i data-prog="yoshin"></i></div>
+    <div class="bt-body">
+      <div class="desc">
+        <p class="goal">때릴수록 점점 강해지는 요귀를 상대로, 제한 시간 5분 안에 최대한 많은 피해를 넣는 토벌전이에요.</p>
+        <ul>
+          <li>같은 서버 그룹의 문파들과 피해량으로 겨뤄요.</li>
+          <li>문파원 누구나 참여할 수 있어요.</li>
+          <li>시즌 기록은 매주 수요일 새벽 5시에 새로 시작돼요.</li>
+        </ul>
+        <div class="rule">시간이 안 되면 <b>분신 등록</b>, 직접 들어갈 땐 <b>분신 해제</b>!</div>
+        <div class="score"><span>기여도</span><span class="bar"><i style="width:50%"></i></span><b>직접 10점</b></div>
+        <div class="score"><span>기여도</span><span class="bar"><i class="o" style="width:25%"></i></span><b>분신 5점</b></div>
+      </div>
+      <figure>
+        <img src="yoshin-boss.jpg" alt="요신 토벌령에 등장하는 허수아비 모습의 요귀" loading="lazy">
+        <figcaption>요신 토벌령의 요귀 · 게임 화면</figcaption>
+      </figure>
+    </div>
+  </article>
+
+  <!-- 2. 결계지 방어 -->
+  <article class="bt" id="barrier" style="--c:var(--barrier)">
+    <div class="bt-head">
+      <svg class="emb" aria-hidden="true"><use href="#ic-barrier"/></svg>
+      <div class="tt">
+        <h3><span class="no">02</span>결계지 방어</h3>
+        <div class="chips"><span class="chip k">수시 오픈</span><span class="chip">🛡 협력 콘텐츠</span><span class="chip">주간 마감 화 20:00</span></div>
+      </div>
+      <div class="bt-cd"><span class="l">문파 주간 마감까지</span><span class="v" data-cd2="barrier">--:--:--</span></div>
+    </div>
+    <div class="prog"><i data-prog="barrier"></i></div>
+    <div class="bt-body">
+      <div class="desc">
+        <p class="goal">사방에서 밀려드는 요괴를 막아 내고, 한가운데의 결계를 끝까지 지켜 내는 방어전이에요.</p>
+        <ul>
+          <li>요괴가 결계에 닿기 전에 막아 내는 게 목표예요.</li>
+          <li>요신 토벌령과 같이 수시로 열리고, 화요일 20시에 주간 기여도가 마감돼요.</li>
+        </ul>
+        <div class="rule">시간이 안 되면 <b>분신 등록</b>, 직접 들어갈 땐 <b>분신 해제</b>!</div>
+        <div class="score"><span>기여도</span><span class="bar"><i style="width:50%"></i></span><b>직접 10점</b></div>
+        <div class="score"><span>기여도</span><span class="bar"><i class="o" style="width:25%"></i></span><b>분신 5점</b></div>
+      </div>
+      <figure>
+        <svg class="scene" viewBox="0 0 480 300" preserveAspectRatio="xMidYMid slice" role="img" aria-label="가운데 결계를 향해 사방에서 요괴가 몰려오는 그림">
+          <defs><radialGradient id="bg2" cx="50%" cy="50%" r="70%"><stop offset="0" stop-color="#1f5a5a"/><stop offset="1" stop-color="#0d1b2e"/></radialGradient>
+            <radialGradient id="ward" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#bff3ea" stop-opacity=".9"/><stop offset=".6" stop-color="#3fc7b4" stop-opacity=".35"/><stop offset="1" stop-color="#3fc7b4" stop-opacity="0"/></radialGradient></defs>
+          <rect width="480" height="300" fill="url(#bg2)"/>
+          <g stroke="#3fc7b4" stroke-opacity=".25" fill="none"><circle cx="240" cy="150" r="70"/><circle cx="240" cy="150" r="110"/><circle cx="240" cy="150" r="150"/></g>
+          <circle cx="240" cy="150" r="64" fill="url(#ward)"/>
+          <circle cx="240" cy="150" r="38" fill="none" stroke="#bff3ea" stroke-width="3"/>
+          <circle cx="240" cy="150" r="26" fill="none" stroke="#bff3ea" stroke-width="2" stroke-dasharray="5 5"/>
+          <path d="M240 128 L246 146 L264 150 L246 154 L240 172 L234 154 L216 150 L234 146 Z" fill="#e9fffb"/>
+          <g fill="#ff7a7a"><g id="mob"><circle r="9"/><circle cx="-3" cy="-2" r="1.6" fill="#1a0b0b"/><circle cx="3" cy="-2" r="1.6" fill="#1a0b0b"/><path d="M-6 -7 l-3 -6 4 3 M6 -7 l3 -6 -4 3" stroke="#ff7a7a" stroke-width="2"/></g></g>
+          <use href="#mob" x="70" y="60"/><use href="#mob" x="40" y="160"/><use href="#mob" x="90" y="250"/>
+          <use href="#mob" x="410" y="50"/><use href="#mob" x="440" y="170"/><use href="#mob" x="380" y="260"/>
+          <use href="#mob" x="240" y="22"/><use href="#mob" x="250" y="280"/>
+          <g stroke="#ff9a9a" stroke-width="2" stroke-dasharray="4 6" fill="none" opacity=".7"><path d="M84 70 L180 120"/><path d="M54 160 L170 152"/><path d="M100 240 L185 185"/><path d="M398 60 L300 118"/><path d="M426 170 L310 155"/><path d="M370 250 L295 188"/><path d="M240 36 L240 92"/><path d="M250 266 L244 210"/></g>
+          <g fill="#bff3ea"><circle cx="190" cy="105" r="6"/><circle cx="292" cy="105" r="6"/><circle cx="185" cy="195" r="6"/><circle cx="298" cy="195" r="6"/></g>
+        </svg>
+        <figcaption>사방에서 몰려오는 요괴를 막아 결계를 지켜요 · 짐승특공대 그림</figcaption>
+      </figure>
+    </div>
+  </article>
+
+  <!-- 3. 미혹의 정원 -->
+  <article class="bt" id="garden" style="--c:var(--garden)">
+    <div class="bt-head">
+      <svg class="emb" aria-hidden="true"><use href="#ic-garden"/></svg>
+      <div class="tt">
+        <h3><span class="no">03</span>미혹의 정원</h3>
+        <div class="chips"><span class="chip k">매주 토 20:00</span><span class="chip">⚔ 문파 간 경쟁·협력</span><span class="chip">기여도 20점</span></div>
+      </div>
+      <div class="bt-cd"><span class="l">시작까지</span><span class="v" data-cd2="garden">--:--:--</span></div>
+    </div>
+    <div class="prog"><i data-prog="garden"></i></div>
+    <div class="bt-body">
+      <div class="desc">
+        <p class="goal">여러 문파가 한 정원에 모여 서로 겨루기도, 힘을 합치기도 하는 문파 간 콘텐츠예요.</p>
+        <ul>
+          <li>짐승특공대는 <b>매주 토요일 20시</b>에 모여요.</li>
+          <li>참여하면 주간 기여도 <b>20점</b>, 한 번으로 보상 기준 30점의 3분의 2를 채워요.</li>
+        </ul>
+        <div class="rule"><b>20시 정각</b> 시작! 미리 접속해 주세요.</div>
+        <div class="score"><span>기여도</span><span class="bar"><i style="width:100%"></i></span><b>20점</b></div>
+      </div>
+      <figure>
+        <svg class="scene" viewBox="0 0 480 300" preserveAspectRatio="xMidYMid slice" role="img" aria-label="안개 낀 밤의 정원과 등불, 꽃잎이 흩날리는 그림">
+          <defs><linearGradient id="bg3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a1640"/><stop offset="1" stop-color="#4a2550"/></linearGradient>
+            <radialGradient id="glow3"><stop offset="0" stop-color="#ffd3a0" stop-opacity=".9"/><stop offset="1" stop-color="#ffd3a0" stop-opacity="0"/></radialGradient>
+            <filter id="blur3"><feGaussianBlur stdDeviation="8"/></filter></defs>
+          <rect width="480" height="300" fill="url(#bg3)"/>
+          <circle cx="380" cy="70" r="34" fill="#ffe9f1" opacity=".85"/>
+          <path d="M0 210 Q120 170 240 205 T480 195 V300 H0Z" fill="#2c1735"/>
+          <g fill="none" stroke="#ff8fb5" stroke-opacity=".55" stroke-width="10" stroke-linecap="round"><path d="M40 270 H180 V230 H110 V200"/><path d="M440 270 H300 V230 H370 V200"/><path d="M240 290 V245"/></g>
+          <g transform="translate(120 120)"><path d="M0 0 C-30 -10 -40 -40 -10 -60 C10 -75 40 -55 30 -30 C50 -40 70 -10 40 5 Z" fill="#3a1d47"/></g>
+          <g fill="#ff8fb5"><circle cx="100" cy="72" r="5"/><circle cx="118" cy="62" r="4"/><circle cx="135" cy="80" r="5"/><circle cx="92" cy="96" r="4"/><circle cx="150" cy="98" r="4"/></g>
+          <path d="M125 120 V215" stroke="#2a1430" stroke-width="7"/>
+          <g><circle cx="200" cy="170" r="26" fill="url(#glow3)"/><rect x="192" y="158" width="16" height="22" rx="4" fill="#ffb86b"/>
+             <circle cx="300" cy="160" r="26" fill="url(#glow3)"/><rect x="292" y="148" width="16" height="22" rx="4" fill="#ffb86b"/></g>
+          <ellipse cx="240" cy="235" rx="260" ry="26" fill="#f6d6ff" opacity=".22" filter="url(#blur3)"/>
+          <g fill="#ffc3d6" opacity=".85"><ellipse cx="60" cy="40" rx="4" ry="2" transform="rotate(30 60 40)"/><ellipse cx="250" cy="60" rx="4" ry="2" transform="rotate(-20 250 60)"/><ellipse cx="330" cy="120" rx="4" ry="2" transform="rotate(50 330 120)"/><ellipse cx="420" cy="150" rx="4" ry="2"/><ellipse cx="170" cy="40" rx="3.5" ry="1.8" transform="rotate(10 170 40)"/></g>
+        </svg>
+        <figcaption>안개 낀 정원에서 문파끼리 겨뤄요 · 짐승특공대 그림</figcaption>
+      </figure>
+    </div>
+  </article>
+
+  <!-- 4. 신기 쟁탈전 -->
+  <article class="bt" id="artifact" style="--c:var(--artifact)">
+    <div class="bt-head">
+      <svg class="emb" aria-hidden="true"><use href="#ic-artifact"/></svg>
+      <div class="tt">
+        <h3><span class="no">04</span>신기 쟁탈전</h3>
+        <div class="chips"><span class="chip k">매주 금 20:00</span><span class="chip">🏯 중앙 거점 장악</span><span class="chip">⚔ 문파 간 대규모 전투</span><span class="chip">기여도 20점</span></div>
+      </div>
+      <div class="bt-cd"><span class="l">시작까지</span><span class="v" data-cd2="artifact">--:--:--</span></div>
+    </div>
+    <div class="prog"><i data-prog="artifact"></i></div>
+    <div class="bt-body">
+      <div class="desc">
+        <p class="goal">신기를 차지하려고 문파끼리 크게 맞붙는 전투예요. 중앙 거점을 누가 잡느냐가 승부를 가릅니다.</p>
+        <ul>
+          <li>짐승특공대는 <b>매주 금요일 20시</b>에 출전해요.</li>
+                    <li>참여하면 주간 기여도 <b>20점</b>이에요.</li>
+        </ul>
+        <div class="rule"><b>20시 정각</b> 시작! 미리 접속해 주세요.</div>
+        <div class="score"><span>기여도</span><span class="bar"><i style="width:100%"></i></span><b>20점</b></div>
+      </div>
+      <figure>
+        <svg class="scene" viewBox="0 0 480 300" preserveAspectRatio="xMidYMid slice" role="img" aria-label="가운데 제단 위에 빛나는 신기가 있고 양쪽에서 문파 깃발이 다가오는 그림">
+          <defs><linearGradient id="bg4" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1b1d4d"/><stop offset="1" stop-color="#3b2a1a"/></linearGradient>
+            <radialGradient id="glow4"><stop offset="0" stop-color="#fff2c4"/><stop offset=".4" stop-color="#f2b84b" stop-opacity=".6"/><stop offset="1" stop-color="#f2b84b" stop-opacity="0"/></radialGradient></defs>
+          <rect width="480" height="300" fill="url(#bg4)"/>
+          <g stroke="#f2b84b" stroke-opacity=".25" stroke-width="2"><path d="M240 120 L0 40"/><path d="M240 120 L480 40"/><path d="M240 120 L60 0"/><path d="M240 120 L420 0"/><path d="M240 120 L240 0"/></g>
+          <path d="M120 300 L180 200 H300 L360 300Z" fill="#2a1c12"/>
+          <path d="M175 210 H305 L315 228 H165Z" fill="#5a3f22"/><path d="M190 190 H290 L300 210 H180Z" fill="#6e4f2c"/><path d="M205 172 H275 L283 190 H197Z" fill="#856038"/>
+          <circle cx="240" cy="128" r="70" fill="url(#glow4)"/>
+          <path d="M240 82 L262 128 L240 168 L218 128 Z" fill="#ffe7a8" stroke="#fff6d8" stroke-width="2"/><path d="M240 82 V168 M218 128 H262" stroke="#c98a1c" stroke-width="1.5"/>
+          <g><path d="M40 300 V170" stroke="#2a2a40" stroke-width="4"/><path d="M42 172 h46 l-10 14 10 14 h-46z" fill="#e05555"/>
+             <path d="M90 300 V200" stroke="#2a2a40" stroke-width="4"/><path d="M92 202 h36 l-8 11 8 11 h-36z" fill="#e05555"/>
+             <path d="M440 300 V170" stroke="#2a2a40" stroke-width="4"/><path d="M438 172 h-46 l10 14 -10 14 h46z" fill="#4a8ae0"/>
+             <path d="M390 300 V200" stroke="#2a2a40" stroke-width="4"/><path d="M388 202 h-36 l8 11 -8 11 h36z" fill="#4a8ae0"/></g>
+          <g fill="#fff2c4"><circle cx="160" cy="70" r="2"/><circle cx="330" cy="60" r="2.4"/><circle cx="300" cy="96" r="1.6"/><circle cx="180" cy="110" r="1.8"/></g>
+        </svg>
+        <figcaption>신기를 두고 중앙 거점을 다퉈요 · 짐승특공대 그림</figcaption>
+      </figure>
+    </div>
+  </article>
+
+  <p class="src">콘텐츠 설명은 게임 내 안내와 공개 기사(<a href="https://byline.network/2026/08/20-643/" target="_blank" rel="noopener">바이라인네트워크</a>, <a href="https://dealsite.co.kr/articles/167556" target="_blank" rel="noopener">딜사이트</a>)를 바탕으로 문파원용으로 정리했어요. 요신 토벌령 이미지는 게임 화면이고, 나머지 그림은 이 페이지용으로 새로 그린 거예요. 일정과 점수는 짐승특공대 문파 규칙 기준입니다.</p>
+</main>
+
+<script src="schedule.js"></script>
+<script>
+(function(){
+  var B=window.BATTLES, T=window.BattleTime, WEEK=7*86400000;
+  var dayName=['일','월','화','수','목','금','토'];
+  function label(b){return b.kind==='deadline'?'요신 토벌령 · 결계지 방어 주간 마감':b.name;}
+  /* 오늘 표시 */
+  var k=new Date(Date.now()+9*3600000).getUTCDay();
+  var td=document.querySelector('.wd[data-d="'+k+'"]'); if(td) td.classList.add('today');
+
+  function tick(){
+    var now=Date.now();
+    var s=T.soonest(now), f=T.fmt(s.ms);
+    document.getElementById('nextName').textContent=label(s.b)+(s.b.kind==='deadline'?'까지':' 시작까지');
+    document.getElementById('nextCd').textContent=f.text;
+    var at=new Date(now+s.ms+9*3600000);
+    document.getElementById('nextAt').textContent=(at.getUTCMonth()+1)+'월 '+at.getUTCDate()+'일 ('+dayName[at.getUTCDay()]+') '+String(at.getUTCHours()).padStart(2,'0')+':'+String(at.getUTCMinutes()).padStart(2,'0')+' · 한국 시간';
+    B.forEach(function(b){
+      var ms=T.untilNext(b,now), t=T.fmt(ms);
+      var a=document.querySelector('[data-cd="'+b.id+'"] b'); if(a) a.textContent=t.text;
+      var c=document.querySelector('[data-cd2="'+b.id+'"]'); if(c) c.textContent=t.text;
+      var p=document.querySelector('[data-prog="'+b.id+'"]'); if(p) p.style.width=((1-ms/WEEK)*100).toFixed(2)+'%';
+    });
+  }
+  tick(); setInterval(tick,1000);
+
+  /* 별 */
+  var c=document.getElementById('sky'),x=c.getContext('2d'),dpr=Math.min(window.devicePixelRatio||1,2),st=[];
+  var still=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function size(){c.width=c.offsetWidth*dpr;c.height=c.offsetHeight*dpr;st=[];var n=Math.round(c.offsetWidth*c.offsetHeight/2400);
+    for(var i=0;i<n;i++)st.push({x:Math.random()*c.width,y:Math.random()*c.height,r:(Math.random()*1.2+.3)*dpr,p:Math.random()*6.28,s:Math.random()*.02+.005});}
+  function draw(){x.clearRect(0,0,c.width,c.height);for(var i=0;i<st.length;i++){var s=st[i];s.p+=s.s;x.globalAlpha=.3+.7*Math.abs(Math.sin(s.p));x.fillStyle='#fff';x.beginPath();x.arc(s.x,s.y,s.r,0,6.28);x.fill();}
+    if(!still)requestAnimationFrame(draw);}
+  size();draw();window.addEventListener('resize',function(){size();if(still)draw();});
+})();
+</script>
+</body>
+</html>

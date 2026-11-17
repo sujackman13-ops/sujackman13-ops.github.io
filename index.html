@@ -36,6 +36,10 @@ html,body{margin:0;background:#16183a;color:#fff;font-family:"Noto Sans KR",syst
 .clock{display:flex;flex-direction:column;align-items:center;gap:2px;margin:2px 0 4px;font-family:"Gowun Batang",serif;font-weight:700;color:#fff;text-shadow:0 2px 0 rgba(30,30,80,.4),0 0 18px rgba(190,200,255,.4)}
 .clock .cd{font-size:clamp(14px,1.8vw,18px);color:#e6e0ff;letter-spacing:.06em}
 .clock .ct{font-size:clamp(34px,6vw,58px);line-height:1.05;letter-spacing:.06em;font-variant-numeric:tabular-nums}
+.clock .nx{margin-top:8px;display:inline-flex;align-items:baseline;gap:8px;flex-wrap:wrap;justify-content:center;padding:6px 16px;border-radius:999px;background:rgba(12,14,40,.45);border:1px solid rgba(255,217,138,.35);color:#f3e6c4;text-decoration:none;font-size:clamp(14px,1.8vw,17px);text-shadow:none}
+.clock .nx:hover{border-color:#ffd98a}
+.clock .nx .nxl{font-family:"Noto Sans KR",sans-serif;font-size:11px;font-weight:700;letter-spacing:.08em;color:#ffd98a}
+.clock .nx b{color:#fff;font-variant-numeric:tabular-nums}
 .plaque{display:inline-flex;align-items:center;gap:12px;margin-top:6px;padding:12px 26px;border-radius:6px;
   font-family:"Gowun Batang",serif;font-weight:700;font-size:clamp(17px,2.4vw,24px);color:#3a2a14;text-decoration:none;
   background:linear-gradient(#efe4cc,#d9c9a6);border:2px solid #8a6a3a;
@@ -77,6 +81,7 @@ footer{background:#111330;color:#7d80a8;font-size:12px;text-align:center;padding
   <nav>
     <a href="index.html" class="on">홈</a>
     <a href="notice.html">문파 공지</a>
+    <a href="battle.html">문파 전투</a>
     <a href="updates.html">업데이트</a>
     <a href="https://forum.kakaogames.com/dokkaebi" target="_blank" rel="noopener"><span class="pc">공식 </span>커뮤니티 ↗</a>
   </nav>
@@ -97,7 +102,7 @@ footer{background:#111330;color:#7d80a8;font-size:12px;text-align:center;padding
     <span class="kicker">도깨비의 세계 · 문파</span>
     <h1 class="title">짐승특공대</h1>
     <p class="tagline">함께라서 더 즐거운 도깨비의 세계</p>
-    <div class="clock" aria-live="off"><span class="cd" id="clkDate"></span><span class="ct" id="clkTime">--:--:--</span></div>
+    <div class="clock" aria-live="off"><span class="cd" id="clkDate"></span><span class="ct" id="clkTime">--:--:--</span><a class="nx" id="nx" href="battle.html"><span class="nxl">다음 문파 일정</span><span id="nxName">-</span><b id="nxCd">-</b></a></div>
     <a class="plaque" id="latestPlaque" href="updates.html">✦ <span>업데이트 브리핑 보기</span> ✦</a>
     <a class="go" id="latestGo" href="updates.html" aria-label="최신 업데이트 브리핑 열기">
       <svg viewBox="0 0 48 48"><path d="M10 8 L40 24 L10 40 L18 24Z" fill="#f4b768"/><path d="M18 24 L40 24" stroke="#4a2a14" stroke-width="2"/></svg>
@@ -117,6 +122,7 @@ footer{background:#111330;color:#7d80a8;font-size:12px;text-align:center;padding
 <footer>짐승특공대 문파 비공식 페이지 · 게임 관련 정보의 출처는 각 브리핑 하단에 있어요.</footer>
 
 <script src="updates.js"></script>
+<script src="schedule.js"></script>
 <script>
 (function(){
   /* 최신 브리핑 연결 + 카드 3개 */
@@ -137,7 +143,10 @@ footer{background:#111330;color:#7d80a8;font-size:12px;text-align:center;padding
   var ft=new Intl.DateTimeFormat('ko-KR',{timeZone:'Asia/Seoul',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
   function tick(){var n=new Date(),p={};fd.formatToParts(n).forEach(function(x){p[x.type]=x.value;});
     dEl.textContent=p.year+'. '+p.month+'. '+p.day+' ('+p.weekday+')';
-    tEl.textContent=ft.format(n).replace(/^24/,'00');}
+    tEl.textContent=ft.format(n).replace(/^24/,'00');
+    if(window.BattleTime){var s=BattleTime.soonest(n.getTime());
+      document.getElementById('nxName').textContent=(s.b.kind==='deadline'?'요신·결계지 주간 마감까지':s.b.name+'까지');
+      document.getElementById('nxCd').textContent=BattleTime.fmt(s.ms).text;}}
   tick();setInterval(tick,1000);
 
   /* 별 반짝임 */
