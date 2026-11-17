@@ -80,7 +80,20 @@ body{margin:0;background:#14163a;color:#eef0ff;font-family:"Noto Sans KR",system
 .seg{display:flex;border-radius:12px;background:var(--card2);padding:4px;border:1px solid rgba(255,255,255,.1)}
 .seg button{border:0;background:none;color:var(--muted);font:inherit;font-size:13.5px;font-weight:700;padding:6px 14px;border-radius:9px;cursor:pointer}
 .seg button[aria-pressed="true"]{background:var(--mem);color:#fff}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(176px,1fr));gap:10px;list-style:none;margin:0;padding:0}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;list-style:none;margin:0;padding:0}
+.pf.mem{--c:var(--mem);padding:16px 12px 14px;gap:6px;transition:transform .2s,box-shadow .2s}
+.pf.mem:hover{transform:translateY(-3px);box-shadow:0 10px 26px rgba(155,107,255,.22)}
+.pf.mem .role{font-size:11px;padding:1px 10px}
+.pf.mem .role{margin-bottom:0}
+.pf.mem .no{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums;margin-top:-4px;margin-bottom:auto}
+.pf.mem .por{max-width:180px}
+.pf.mem .nm{font-size:19px}
+.pf.mem .say{font-size:12px;padding:6px 10px}
+.pf.mem.nophoto{opacity:.92}
+.por.ph{display:grid;place-items:center;background:radial-gradient(circle at 50% 35%,color-mix(in srgb,var(--h) 45%,#2c3168),#1d2152 75%)}
+.por.ph b{font-family:"Gowun Batang",serif;font-size:56px;color:#fff;opacity:.9;text-shadow:0 2px 10px rgba(0,0,0,.4)}
+.por.ph small{position:absolute;bottom:10px;left:0;right:0;text-align:center;font-size:11px;color:var(--muted);z-index:1}
+.pf mark{background:rgba(155,107,255,.45);color:#fff;border-radius:3px;padding:0 1px}
 .mc{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;background:var(--card2);border:1px solid rgba(255,255,255,.06);transition:transform .2s,border-color .2s}
 .mc:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--h) 70%,transparent)}
 .mc .av{width:42px;height:42px;font-size:18px}
@@ -92,7 +105,7 @@ body{margin:0;background:#14163a;color:#eef0ff;font-family:"Noto Sans KR",system
 .note{font-size:12.5px;color:var(--muted);margin:0}
 
 @media (max-width:760px){.staff{grid-template-columns:1fr 1fr}.pf.lead{grid-column:1/-1}}
-@media (max-width:640px){.bt-head svg.emb{width:50px;height:62px}.bt-body{padding:16px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.mc{padding:10px}.mc .av{width:36px;height:36px;font-size:16px}.mc .nm{font-size:14px}.pf .nm{font-size:22px}}
+@media (max-width:640px){.bt-head svg.emb{width:50px;height:62px}.bt-body{padding:16px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.pf.mem .nm{font-size:16px}.por.ph b{font-size:42px}.mc{padding:10px}.mc .av{width:36px;height:36px;font-size:16px}.mc .nm{font-size:14px}.pf .nm{font-size:22px}}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.mc{transition:none}}
 </style>
 </head>
@@ -168,7 +181,7 @@ body{margin:0;background:#14163a;color:#eef0ff;font-family:"Noto Sans KR",system
 
 </main>
 
-<script src="members.js?v=3"></script>
+<script src="members.js?v=4"></script>
 <script>
 (function(){
   var G=window.GUILD;
@@ -178,12 +191,14 @@ body{margin:0;background:#14163a;color:#eef0ff;font-family:"Noto Sans KR",system
   var AV=G.avatars||{}, SAY=G.says||{};
   function av(n,cls){var img=AV[n];
     return '<span class="av '+(cls||'')+'" style="--h:'+hue(n)+'" aria-hidden="true">'+(img?'<img src="'+esc(img)+'" alt="" loading="lazy">':esc(Array.from(n)[0]))+'</span>';}
-  function staff(n,role,cls,crown){
-    var img=AV[n], say=SAY[n];
-    return '<div class="pf '+cls+'">'+(crown?'<span class="crown" aria-hidden="true">👑</span>':'')+'<span class="role">'+role+'</span>'+
-      (say?'<span class="say">'+esc(say)+'</span>':'')+
-      (img?'<span class="por"><img src="'+esc(img)+'" alt="'+esc(n)+' 캐릭터" loading="lazy"></span>':av(n))+
-      '<span class="nm">'+esc(n)+'</span></div>';}
+  function staff(n,role,cls,crown,opt){
+    opt=opt||{}; var img=AV[n], say=SAY[n], tag=opt.tag||'div';
+    var por=img?'<span class="por"><img src="'+esc(img)+'" alt="'+esc(n)+' 캐릭터" loading="lazy"></span>'
+      :(opt.ph?'<span class="por ph" style="--h:'+hue(n)+'"><b aria-hidden="true">'+esc(Array.from(n)[0])+'</b><small>사진 준비 중</small></span>':av(n));
+    return '<'+tag+' class="pf '+cls+(img?'':' nophoto')+'">'+(crown?'<span class="crown" aria-hidden="true">👑</span>':'')+'<span class="role">'+role+'</span>'+
+      (opt.no?'<span class="no">No. '+opt.no+'</span>':'')+
+      (say?'<span class="say">'+esc(say)+'</span>':'')+por+
+      '<span class="nm">'+(opt.html||esc(n))+'</span></'+tag+'>';}
 
   document.getElementById('total').innerHTML=(1+G.vice.length+G.members.length)+'<small>명</small>';
   document.getElementById('cV').textContent=G.vice.length;
@@ -203,7 +218,7 @@ body{margin:0;background:#14163a;color:#eef0ff;font-family:"Noto Sans KR",system
     grid.innerHTML=arr.map(function(m){
       var nm=esc(m.n);
       if(k){var p=m.n.toLowerCase().indexOf(k);nm=esc(m.n.slice(0,p))+'<mark>'+esc(m.n.slice(p,p+k.length))+'</mark>'+esc(m.n.slice(p+k.length));}
-      return '<li class="mc" style="--h:'+hue(m.n)+'">'+av(m.n)+'<span><span class="nm">'+nm+'</span><br><span class="no">No. '+String(m.i).padStart(2,'0')+'</span></span></li>';
+      return staff(m.n,'문파원','mem',false,{tag:'li',ph:true,no:String(m.i).padStart(2,'0'),html:nm});
     }).join('');
     empty.style.display=arr.length?'none':'block';
   }

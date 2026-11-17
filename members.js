@@ -13,11 +13,15 @@ window.GUILD = {
   avatars: {
     "순록이": "avatar-soonrok.jpg",
     "킁야시": "avatar-kkeungyasi.jpg",
-    "수재르": "avatar-sujaereu.jpg"
+    "수재르": "avatar-sujaereu.jpg",
+    "쪼아시": "avatar-jjoasi.jpg",
+    "마이크론": "avatar-micron.jpg",
+    "맑음이": "avatar-malgeumi.jpg"
   },
   says: {
     "순록이": "안녕하세요. 순록이입니다. 잘 부탁드립니다.",
     "킁야시": "3일 미접시 추방\n요신토벌령/결계지방어 불참시 분신등록 부탁드립니다",
-    "수재르": "어디로 가야하오"
+    "수재르": "어디로 가야하오",
+    "맑음이": "방가방가 햄토리"
   }
 };
