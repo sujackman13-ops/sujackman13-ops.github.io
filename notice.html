@@ -32,15 +32,17 @@ body{margin:0;background:#16183a;color:#eef0ff;font-family:"Noto Sans KR",system
 .ev.free .day{font-size:22px}
 
 /* 가입 기준 */
-.rules{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-.rule{background:#262b62;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:6px;text-align:center;align-items:center}
+.rules{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media (max-width:900px){.rules{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.rule{background:#262b62;border-radius:12px;padding:16px 10px;display:flex;flex-direction:column;gap:6px;text-align:center;align-items:center}
 .rule .ic{font-size:26px;line-height:1}
-.rule .big{font-family:"Do Hyeon",sans-serif;font-size:24px;color:#fff;line-height:1.2}
+.rule .big{font-family:"Do Hyeon",sans-serif;font-size:21px;word-break:keep-all;color:#fff;line-height:1.2}
 .rule .sub{font-size:13px;color:#b9bce0}
 .rule.warn .big{color:#ff9a86}
 .rule .must{color:#ffd98a}
 .kakao{margin-top:6px;display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:999px;background:#fee500;color:#191600;font-weight:700;font-size:14px;text-decoration:none;transition:transform .2s}
-.kakao:hover{transform:translateY(-2px)}
+.kakao:hover,.discord:hover{transform:translateY(-2px)}
+.discord{margin-top:6px;display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:999px;background:#5865f2;color:#fff;font-weight:700;font-size:14px;text-decoration:none;transition:transform .2s}
 .welcome{font-size:14px;color:#cfd2f0;display:flex;flex-direction:column;gap:6px}
 
 /* 기여도 */
@@ -63,7 +65,8 @@ body{margin:0;background:#16183a;color:#eef0ff;font-family:"Noto Sans KR",system
 .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:#b9bce0}
 .legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
 .legend .la::before{background:#e8a85a}.legend .lb2::before{background:#8a6a3a}
-@media (max-width:640px){.sched,.rules{grid-template-columns:minmax(0,1fr)}.pt{grid-template-columns:1fr 54px}.pt .lb{grid-column:1/-1}}
+@media (max-width:640px){.sched{grid-template-columns:minmax(0,1fr)}.pt{grid-template-columns:1fr 54px}.pt .lb{grid-column:1/-1}}
+@media (max-width:480px){.rules{grid-template-columns:minmax(0,1fr)}}
 </style>
 </head>
 <body>
@@ -95,7 +98,8 @@ body{margin:0;background:#16183a;color:#eef0ff;font-family:"Noto Sans KR",system
     <h2 id="s2"><span class="no">2</span>가입 · 활동 기준</h2>
     <div class="rules">
       <div class="rule"><span class="ic" aria-hidden="true">⚔️</span><span class="big">전투력 10만+</span><span class="sub">가입 조건</span></div>
-      <div class="rule"><span class="ic" aria-hidden="true">💬</span><span class="big">3일 안 오픈단톡방</span><span class="sub"><b class="must">입장 필수!</b></span><a class="kakao" href="https://open.kakao.com/o/gR1uGdSi" target="_blank" rel="noopener">오픈그룹톡 입장하기 ↗</a></div>
+      <div class="rule"><span class="ic" aria-hidden="true">💬</span><span class="big">3일 안 오픈단톡방</span><span class="sub"><b class="must">입장 필수!</b></span><a class="kakao" href="https://open.kakao.com/o/gR1uGdSi" target="_blank" rel="noopener">오픈톡 입장 ↗</a></div>
+      <div class="rule"><span class="ic" aria-hidden="true">🎧</span><span class="big">문파 디스코드</span><span class="sub">함께 소통해요</span><a class="discord" href="https://discord.gg/FQfqeSweJk" target="_blank" rel="noopener">디스코드 입장 ↗</a></div>
       <div class="rule warn"><span class="ic" aria-hidden="true">👋</span><span class="big">3일 이상 미접속</span><span class="sub">사요나라입니다</span></div>
     </div>
     <div class="tip">단, 휴가·출장·바쁜 일정은 <b>단톡방 또는 운영진</b>에게 언질해 주시면 예외 적용하겠습니다~</div>
