@@ -1,0 +1,12 @@
+/* 공통 상단 메뉴 (모든 페이지) */
+.gnb{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:28px;
+  height:60px;padding:0 max(20px,env(safe-area-inset-left,0px));
+  background:rgba(22,24,58,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  border-bottom:1px solid rgba(255,255,255,.08);font-family:"Noto Sans KR",system-ui,sans-serif}
+.gnb .logo{font-family:"Do Hyeon","Noto Sans KR",sans-serif;font-size:22px;color:#fff;text-decoration:none;letter-spacing:.02em;white-space:nowrap}
+.gnb .logo small{font-size:13px;color:#c8b98a;margin-left:6px}
+.gnb nav{display:flex;gap:24px;overflow-x:auto;scrollbar-width:none}
+.gnb nav a{color:#e6e6f5;text-decoration:none;font-size:15px;font-weight:500;white-space:nowrap;padding:6px 0;border-bottom:2px solid transparent}
+.gnb nav a:hover{color:#fff}
+.gnb nav a.on{color:#ffd98a;border-bottom-color:#ffd98a}
+@media (max-width:560px){.gnb{gap:16px}.gnb .logo small{display:none}.gnb nav{gap:16px}.gnb nav a{font-size:14px}}
