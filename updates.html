@@ -39,7 +39,7 @@ body{margin:0;background:#16183a;color:#fff;font-family:"Noto Sans KR",system-ui
 </header>
 <div class="head"><h1>업데이트 브리핑</h1><p>최신 순으로 정리돼 있어요.</p></div>
 <div class="list" id="list"></div>
-<script src="updates.js?v=2"></script>
+<script src="updates.js?v=3"></script>
 <script>
 document.getElementById('list').innerHTML=(window.UPDATES||[]).map(function(u){
   return '<a class="row" href="'+u.file+'"><span class="d">'+u.date+'</span><span><span class="t">'+u.title+'</span><span class="s">'+u.summary+'</span></span><span class="ar">→</span></a>';

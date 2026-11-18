@@ -3,11 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>짐승특공대 11/18 업데이트 브리핑</title>
+<title>11/18 업데이트 브리핑 (공식) · 짐승특공대</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 <link rel="stylesheet" href="site.css">
 <style>
 /* 쪽빛 바탕에 단청 초록·주홍 포인트. 요약 타일 → 할 일 → 그림으로 보는 분야별 카드 */
@@ -15,17 +16,18 @@
   --bg:#f3f4f7; --panel:#ffffff; --ink:#1b2133; --muted:#5b6478; --line:#dfe2ea; --track:#eceef3;
   --accent:#12806f; --accent-soft:#e1f2ee; --down:#c2432a; --down-soft:#fbe7e2;
   --up:#1f6fb8; --up-soft:#e3eefa; --warn:#a96a00; --warn-soft:#fbf0d9; --old:#9aa2b5;
+  --m-up:#1f6fb8; --m-down:#c2432a; --m-acc:#008a70; --m-warn:#a96a00;
   --display:"Do Hyeon","Noto Sans KR",system-ui,sans-serif;
   --body:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#121625; --panel:#1b2033; --ink:#e7e9f2; --muted:#a2a9bd; --line:#2c3350; --track:#252b42;
   --accent:#4cc3ad; --accent-soft:#16352f; --down:#f08a72; --down-soft:#3a2018;
-  --up:#79b3ec; --up-soft:#172b42; --warn:#e6b45a; --warn-soft:#382a10; --old:#5d6580; color-scheme:dark}}
+  --up:#79b3ec; --up-soft:#172b42; --warn:#e6b45a; --warn-soft:#382a10; --old:#5d6580; --m-up:#4f8fd2; --m-down:#d8664f; --m-acc:#2bab94; --m-warn:#b5802a; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#121625; --panel:#1b2033; --ink:#e7e9f2; --muted:#a2a9bd; --line:#2c3350; --track:#252b42;
   --accent:#4cc3ad; --accent-soft:#16352f; --down:#f08a72; --down-soft:#3a2018;
-  --up:#79b3ec; --up-soft:#172b42; --warn:#e6b45a; --warn-soft:#382a10; --old:#5d6580; color-scheme:dark}
+  --up:#79b3ec; --up-soft:#172b42; --warn:#e6b45a; --warn-soft:#382a10; --old:#5d6580; --m-up:#4f8fd2; --m-down:#d8664f; --m-acc:#2bab94; --m-warn:#b5802a; color-scheme:dark}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.6;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
@@ -41,7 +43,9 @@ p{margin:0}
 .wrap>header{display:flex;flex-direction:column;gap:8px}
 .meta{display:flex;flex-wrap:wrap;gap:8px}
 .chip{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:500;padding:3px 9px;border-radius:999px;background:var(--panel);border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.chip.ok{background:var(--accent-soft);color:var(--accent);border-color:transparent}
 .tbc{font-size:11px;font-weight:700;color:var(--warn);background:var(--warn-soft);padding:1px 7px;border-radius:999px;white-space:nowrap}
+.fix{font-size:11px;font-weight:700;color:var(--down);background:var(--down-soft);padding:1px 7px;border-radius:999px;white-space:nowrap}
 .tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
 .tile{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0}
 .tile .ic{font-size:26px;line-height:1}
@@ -70,6 +74,11 @@ p{margin:0}
 .note{font-size:13px;color:var(--muted)}
 .sublbl{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.04em}
 .tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;color:var(--muted);font-weight:500}
+td.num,th.num{font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right}
+tr.mine td{background:var(--accent-soft);font-weight:700}
 
 /* 시간 축 비교 */
 .axis{position:relative;min-width:520px}
@@ -80,19 +89,19 @@ p{margin:0}
 .seg{position:absolute;top:0;bottom:0;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;overflow:hidden;white-space:nowrap}
 .seg.old{background:var(--old);color:var(--panel)}
 .seg.prep{background:var(--line);color:var(--muted)}
-.seg.cap{background:var(--accent);color:var(--panel)}
+.seg.cap{background:var(--m-acc);color:var(--panel)}
 .ticks{display:grid;grid-template-columns:72px 1fr;gap:8px}
 .ticks .t{position:relative;height:16px;font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
 .ticks .t span{position:absolute;transform:translateX(-50%)}
 .ticks .t span:first-child{transform:none}
 .ticks .t span:last-child{transform:translateX(-100%)}
 
-/* 막대 비교 */
+/* 막대 */
 .bars{display:flex;flex-direction:column;gap:8px}
-.br{display:grid;grid-template-columns:90px 1fr 54px;align-items:center;gap:10px;font-size:13px}
+.br{display:grid;grid-template-columns:96px 1fr 64px;align-items:center;gap:10px;font-size:13px}
 .br .lb{color:var(--muted)}
 .br .tr{height:14px;background:var(--track);border-radius:99px;overflow:hidden}
-.br .tr i{display:block;height:100%;border-radius:99px;background:var(--accent)}
+.br .tr i{display:block;height:100%;border-radius:0 4px 4px 0;background:var(--m-acc)}
 .br .tr i.o{background:var(--old)}
 .br .vl{font-weight:700;font-variant-numeric:tabular-nums;text-align:right}
 .twocol{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
@@ -102,20 +111,26 @@ p{margin:0}
 .big.n{color:var(--accent)}
 .arrow{color:var(--muted);font-size:20px}
 
-/* 도술 보드 */
-.board{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
-.st{border-radius:10px;padding:10px 8px;text-align:center;display:flex;flex-direction:column;gap:2px;align-items:center;border:1px solid transparent}
-.st .ar{font-size:18px;line-height:1;font-weight:700}
-.st .n{font-family:var(--display);font-size:19px}
-.st .x{font-size:11px}
-.st.down{background:var(--down-soft);color:var(--down)}
-.st.up{background:var(--up-soft);color:var(--up)}
-.st.chg{background:var(--warn-soft);color:var(--warn)}
+/* 도술 피해량 증감 차트 (양방향) */
+.dv{display:flex;flex-direction:column;gap:5px;min-width:480px}
+.dr{display:grid;grid-template-columns:120px 1fr 1fr 54px;align-items:center;gap:0;font-size:13px}
+.dr .nm{padding-right:10px;text-align:right}
+.dr .neg,.dr .pos{height:16px;position:relative}
+.dr .neg{border-right:2px solid var(--line)}
+.dr .neg i{position:absolute;right:0;top:0;bottom:0;background:var(--m-down);border-radius:4px 0 0 4px}
+.dr .pos i{position:absolute;left:0;top:0;bottom:0;background:var(--m-up);border-radius:0 4px 4px 0}
+.dr .vl{text-align:right;font-weight:700;font-variant-numeric:tabular-nums}
+.dr .vl.d{color:var(--down)}
+.dr .vl.u{color:var(--up)}
+.dr.mine .nm{font-weight:700}
+.dvax{display:grid;grid-template-columns:120px 1fr 1fr 54px;font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
+.dvax span{display:flex;justify-content:space-between}
 .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
 .legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
-.legend .ld::before{background:var(--down)}
-.legend .lu::before{background:var(--up)}
-.legend .lc::before{background:var(--warn)}
+.legend .ld::before{background:var(--m-down)}
+.legend .lu::before{background:var(--m-up)}
+.tagcloud{display:flex;flex-wrap:wrap;gap:6px}
+.tagcloud span{font-size:12px;padding:3px 10px;border-radius:999px;background:var(--up-soft);color:var(--up)}
 .cal{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
 .wk{border-radius:8px;padding:8px 6px;text-align:center;font-size:12px;background:var(--track);color:var(--muted)}
 .wk b{display:block;font-size:14px;color:var(--ink)}
@@ -132,30 +147,22 @@ p{margin:0}
 .books i{width:14px;height:18px;border-radius:2px;background:var(--old);display:block}
 .book1{width:34px;height:44px;border-radius:4px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:var(--panel);font-family:var(--display);font-size:18px}
 
-/* 사냥터 분할 */
-.split{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center}
-.fld{border-radius:10px;padding:12px;border:1px dashed var(--line);display:flex;flex-direction:column;gap:6px;min-width:0}
-.fld .tt{font-weight:700;font-size:14px}
-.mon{display:flex;gap:4px;flex-wrap:wrap}
-.mon i{width:16px;height:16px;border-radius:50%;display:block}
-.mon .a{background:var(--up)}
-.mon .b{background:var(--down)}
-.zone{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.zone div{border-radius:8px;padding:8px;font-size:12px;display:flex;flex-direction:column;gap:4px}
-.zone .za{background:var(--up-soft);color:var(--up)}
-.zone .zb{background:var(--down-soft);color:var(--down)}
-.zone b{font-size:13px}
-.chain{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px}
-.chain span{background:var(--track);padding:3px 10px;border-radius:999px}
-.chain em{font-style:normal;color:var(--muted)}
+/* 깊은 곳 */
+.deep{display:flex;flex-direction:column;gap:6px;min-width:520px}
+.dp{display:grid;grid-template-columns:150px 1fr 70px 70px;gap:10px;align-items:center;font-size:13px}
+.dp .tr{height:18px;background:var(--track);border-radius:6px;overflow:hidden}
+.dp .tr i{display:block;height:100%;border-radius:0 4px 4px 0;background:var(--m-acc)}
+.dp .num{text-align:right;font-variant-numeric:tabular-nums}
+.dp.h{font-size:11px;color:var(--muted)}
+.ppl{display:inline-flex;gap:2px;vertical-align:middle}
 
 /* 레이드 계단 */
 .stairs{display:flex;flex-direction:column;gap:6px}
-.sr{display:grid;grid-template-columns:52px 1fr 64px;gap:10px;align-items:center;font-size:13px}
+.sr{display:grid;grid-template-columns:52px 1fr 70px;gap:10px;align-items:center;font-size:13px}
 .sr .lv{font-weight:700}
-.sr .tr{height:20px;background:var(--track);border-radius:6px;overflow:hidden}
+.sr .tr{height:18px;background:var(--track);border-radius:6px;overflow:hidden}
 .sr .tr i{display:block;height:100%;border-radius:6px;background:var(--old)}
-.sr.new .tr i{background:var(--accent)}
+.sr.new .tr i{background:var(--m-acc)}
 .sr.new .lv{color:var(--accent)}
 .sr .vl{font-variant-numeric:tabular-nums;text-align:right;color:var(--muted)}
 
@@ -166,30 +173,182 @@ p{margin:0}
 .node.n{background:var(--accent-soft);color:var(--accent)}
 .node.d{background:var(--down-soft);color:var(--down)}
 .stack{display:flex;flex-direction:column;gap:8px}
+.steps{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:13px}
+.steps span{background:var(--track);border-radius:8px;padding:6px 10px}
+.steps span b{display:block;font-size:12px;color:var(--accent)}
 
 /* 보상 */
-.rew{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.rew{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .rw{background:var(--track);border-radius:10px;padding:12px 8px;text-align:center;display:flex;flex-direction:column;gap:4px;align-items:center}
 .rw .ic{font-size:24px;line-height:1}
 .rw .q{font-family:var(--display);font-size:22px;color:var(--accent)}
 .rw .nm{font-size:12px;color:var(--muted);line-height:1.3}
-.rw.hot{background:var(--accent-soft)}
 
 /* 로드맵 */
-.road{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;position:relative}
+.road{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
 .rd{border-top:4px solid var(--line);padding-top:10px;display:flex;flex-direction:column;gap:6px;min-width:0}
 .rd.now{border-color:var(--accent)}
 .rd .when{font-family:var(--display);font-size:18px}
 .rd ul{padding-left:16px;margin:0}
 .rd li{font-size:13px}
 
+
+/* 도술 트리 */
+.tree{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.br-c{background:var(--track);border-radius:10px;padding:10px;min-width:0}
+.br-h{display:flex;gap:6px;align-items:center;margin-bottom:6px}
+.br-h b{font-family:var(--display);font-weight:400;font-size:17px;margin-right:auto}
+.br-c ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:5px}
+.br-c li{display:flex;flex-wrap:wrap;align-items:center;gap:4px;font-size:12.5px}
+.br-c li.ult .sn{font-weight:700;color:var(--accent)}
+.br-c .sn{margin-right:auto}
+.sb{flex-basis:100%;height:5px;background:var(--panel);border-radius:99px;overflow:hidden}
+.sb i{display:block;height:100%;background:var(--accent);border-radius:99px}
+.b{font-size:10.5px;font-weight:700;padding:0 6px;border-radius:999px;white-space:nowrap}
+.b.u{background:var(--up-soft);color:var(--up)} .b.d{background:var(--down-soft);color:var(--down)}
+.b.t{background:var(--warn-soft);color:var(--warn)} .b.n{background:var(--accent-soft);color:var(--accent)}
+.legend .lt::before{background:var(--m-warn)} .legend .ls::before{background:var(--m-acc)}
+/* 추천 덱 */
+.dtabs{display:flex;gap:6px;flex-wrap:wrap}
+.dtabs button{font:inherit;font-size:13px;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--panel);color:var(--muted);cursor:pointer}
+.dtabs button[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:var(--panel);font-weight:700}
+.dpane{display:flex;flex-direction:column;gap:10px}
+.dpane[hidden]{display:none}
+.decks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.deck{border:1px solid var(--line);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.deck.top{border-color:var(--accent);background:var(--accent-soft)}
+.dk-h{display:flex;align-items:center;gap:8px}
+.dk-h .rk{width:22px;height:22px;border-radius:6px;background:var(--ink);color:var(--panel);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+.dk-h b{font-size:14px;margin-right:auto}
+.dk-h .sc{font-family:var(--display);font-size:24px;color:var(--accent);font-variant-numeric:tabular-nums}
+.dkb{height:8px;background:var(--track);border-radius:99px;overflow:hidden}
+.dkb i{display:block;height:100%;background:var(--m-acc);border-radius:99px}
+.dcs,.dleg{display:flex;flex-wrap:wrap;gap:4px}
+.dc{font-size:12px;padding:3px 8px;border-radius:7px;background:var(--track);display:inline-flex;flex-direction:column;line-height:1.25}
+.dc small{font-size:10px;color:var(--muted)}
+.dc.same{background:var(--up-soft);color:var(--up)}
+.dc.fix{background:var(--warn-soft);color:var(--warn)}
+.dc.ultc{background:var(--accent);color:var(--panel);font-weight:700}
+.dc.ultc small{color:var(--panel);opacity:.85}
+@media (max-width:860px){.tree{grid-template-columns:repeat(2,minmax(0,1fr))}.decks{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:400px){.tree{grid-template-columns:minmax(0,1fr)}}
+
+/* 도술 트리 v2 */
+.tree2{display:flex;flex-direction:column;align-items:stretch}
+.troot{align-self:center;background:var(--ink);color:var(--panel);font-family:var(--display);font-size:18px;padding:6px 18px;border-radius:999px;position:relative}
+.troot::after{content:"";position:absolute;left:50%;top:100%;width:2px;height:14px;background:var(--line)}
+.tgroups{display:grid;grid-template-columns:6fr 3fr 3fr;gap:12px;margin-top:14px;padding-top:14px;border-top:2px solid var(--line);position:relative}
+.tgroup{position:relative;display:flex;flex-direction:column;gap:8px;min-width:0}
+.tgroup::before{content:"";position:absolute;left:50%;top:-14px;width:2px;height:14px;background:var(--line)}
+.tgh{align-self:center;font-size:13px;font-weight:700;background:var(--accent-soft);color:var(--accent);padding:3px 12px;border-radius:999px}
+.tsts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.tst{background:var(--track);border-radius:10px;padding:10px 10px 8px;min-width:0}
+.tsh{display:flex;gap:4px;align-items:center;margin-bottom:4px}
+.tsh b{font-family:var(--display);font-weight:400;font-size:17px;margin-right:auto}
+.tst ul{list-style:none;margin:0;padding:0 0 0 12px;border-left:2px solid var(--line);display:flex;flex-direction:column;gap:3px}
+.tst li{position:relative;display:flex;flex-wrap:wrap;align-items:center;gap:3px;font-size:12.5px;line-height:1.45}
+.tst li::before{content:"";position:absolute;left:-12px;top:.72em;width:9px;height:2px;background:var(--line)}
+.tst li.ult .tn{font-weight:700;color:var(--accent)}
+.tn{margin-right:2px}
+.b.h{background:var(--down-soft);color:var(--down)}
+.legend .lh::before{display:none}
+.uds,.bss{display:flex;flex-direction:column;gap:8px}
+.ud,.bs{border:1px solid var(--line);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:6px}
+.ud-h,.bs-h{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:14px}
+.ud-h b{margin-right:auto}
+.sty{font-size:11px;font-weight:700;background:var(--up-soft);color:var(--up);padding:1px 8px;border-radius:999px}
+.lk{font-size:12px;color:var(--down);font-weight:700}
+.meas{font-size:12px;font-weight:700;background:var(--accent-soft);color:var(--accent);padding:1px 8px;border-radius:999px}
+.meas.none{background:var(--track);color:var(--muted);font-weight:400}
+.ord{display:flex;flex-wrap:wrap;align-items:center;gap:3px}
+.ord .dc{display:inline-block}
+.arr{color:var(--muted);font-size:12px}
+.bs-h b{margin-right:auto}
+.bs-h .v{font-family:var(--display);font-size:22px;color:var(--accent)}
+@media (max-width:860px){.tgroups{grid-template-columns:minmax(0,1fr)}.tgroup::before{display:none}}
+.callout{background:var(--warn-soft);border-radius:10px;padding:12px 14px;font-size:13.5px;line-height:1.6}
+.ord .sublbl{margin:0 2px 0 4px}
+
+/* 인터랙티브 트리 */
+.tctl{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center}
+.tfil{display:flex;flex-wrap:wrap;gap:6px}
+.tfil button,.tdeck button{font:inherit;font-size:12.5px;padding:5px 11px;border-radius:999px;border:1px solid var(--line);background:var(--panel);color:var(--muted);cursor:pointer}
+.tfil button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--panel);font-weight:700}
+.tdeck{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12.5px;color:var(--muted)}
+.tdeck select{font:inherit;font-size:13px;padding:5px 8px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--ink);max-width:230px}
+.tviz{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:12px;align-items:start}
+.tsvg-wrap{overflow:auto;border:1px solid var(--line);border-radius:10px;background:var(--bg);max-height:720px}
+#tsvg{display:block}
+#tsvg .lk{fill:none;stroke:var(--line);stroke-width:1.5}
+#tsvg .lk.on{stroke:var(--m-acc);stroke-width:2.5}
+#tsvg .nd{cursor:pointer}
+#tsvg .nd text{font-family:var(--body);font-size:12.5px;fill:var(--ink);paint-order:stroke;stroke:var(--bg);stroke-width:3px}
+#tsvg .nd.style text{font-family:var(--display);font-size:16px}
+#tsvg .nd.group text{font-weight:700;fill:var(--accent);font-size:13px}
+#tsvg .nd.root text{font-family:var(--display);font-size:17px}
+#tsvg .nd circle{stroke-width:2;fill:var(--panel);stroke:var(--old)}
+#tsvg .nd.style circle,#tsvg .nd.group circle,#tsvg .nd.root circle{fill:var(--ink);stroke:var(--ink)}
+#tsvg .nd.style.closed circle{fill:var(--panel)}
+#tsvg .nd.up circle{fill:var(--m-up);stroke:var(--m-up)}
+#tsvg .nd.dn circle{fill:var(--m-down);stroke:var(--m-down)}
+#tsvg .nd.tg circle{stroke:var(--m-warn);stroke-width:3}
+#tsvg .nd.ult text{font-weight:700;fill:var(--accent)}
+#tsvg .nd.dim{opacity:.22}
+#tsvg .nd.deck circle{stroke:var(--m-acc);stroke-width:4}
+#tsvg .nd.deck text{font-weight:700}
+#tsvg .nd.sel circle{r:8}
+#tsvg .bdg{font-size:10.5px;font-weight:700;stroke:none}
+#tsvg .bdg.u{fill:var(--up)} #tsvg .bdg.d{fill:var(--down)} #tsvg .bdg.t{fill:var(--warn)} #tsvg .bdg.h{fill:var(--down)} #tsvg .bdg.c{fill:var(--muted);font-weight:400}
+.tinfo{border:1px solid var(--line);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;position:sticky;top:12px;min-height:160px}
+.tinfo h4{margin:0;font-family:var(--display);font-weight:400;font-size:20px}
+.tinfo dl{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;margin:0;font-size:13px}
+.tinfo dt{color:var(--muted)} .tinfo dd{margin:0;font-weight:500;font-variant-numeric:tabular-nums}
+.tinfo .chips{display:flex;flex-wrap:wrap;gap:4px}
+.legend .lk2::before{background:transparent;border:3px solid var(--accent);box-sizing:border-box}
+@media (max-width:760px){.tviz{grid-template-columns:minmax(0,1fr)}.tinfo{position:static}}
+
+/* 돌파 천장 컬럼 */
+.cols{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:4px;align-items:end;height:140px;padding-top:4px}
+.col{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:3px;outline-offset:2px}
+.col i{display:block;width:min(22px,100%);background:var(--m-acc);border-radius:4px 4px 0 0;min-height:3px}
+.col .cv{font-size:11px;font-weight:700}
+.col .cl{font-size:11px;color:var(--muted);border-top:1px solid var(--line);width:100%;text-align:center;padding-top:2px}
+.bars.wlb .br{grid-template-columns:150px 1fr 44px}
+.br .lb small.u{font-size:11px;color:var(--muted)}
+.br .vl small{font-weight:400;color:var(--muted);font-size:11px}
+/* 덤벨 */
+.dbs{display:flex;flex-direction:column;gap:10px}
+.db{display:grid;grid-template-columns:84px 1fr 96px;gap:10px;align-items:center;font-size:13px}
+.db .lb{color:var(--muted)}
+.dt{position:relative;height:16px;background:linear-gradient(var(--line),var(--line)) center/100% 1px no-repeat}
+.dt i{position:absolute;top:50%;transform:translate(-50%,-50%)}
+.dt .ln{transform:translateY(-50%);height:3px;background:var(--m-acc);opacity:.45}
+.dt .o,.dt .n{width:12px;height:12px;border-radius:50%;box-shadow:0 0 0 2px var(--panel)}
+.dt .o{background:var(--old)} .dt .n{background:var(--m-acc)}
+.db .vl{text-align:right;font-variant-numeric:tabular-nums} .db s{color:var(--muted)}
+.dblg{display:flex;gap:12px;font-size:12px;color:var(--muted)}
+.dblg span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px;vertical-align:-1px}
+.dblg .o::before{background:var(--old)} .dblg .n::before{background:var(--m-acc)}
+/* 내 전투력 */
+.mycp{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13px}
+.mycp input{font:inherit;width:140px;padding:5px 8px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink)}
+.dp .tr{position:relative;overflow:visible}
+.dp .mk{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--ink);border-radius:1px}
+.dp.ok span:first-child{font-weight:700}
+.dp.no{opacity:.45}
+/* 공용 툴팁 */
+.tip{position:fixed;z-index:50;pointer-events:none;background:var(--ink);color:var(--panel);font-size:12.5px;padding:6px 9px;border-radius:7px;max-width:260px;line-height:1.4;box-shadow:0 4px 14px rgba(0,0,0,.18)}
+.tip[hidden]{display:none}
+[data-tip]:hover,[data-tip]:focus-visible{background:var(--accent-soft)}
+.col[data-tip]:hover,.col[data-tip]:focus-visible{background:transparent}
+.col:hover i,.col:focus-visible i{filter:brightness(1.15)}
 footer{display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:14px}
 footer a{color:var(--accent)}
-@media (max-width:860px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.road{grid-template-columns:repeat(2,minmax(0,1fr))}.rew{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media (max-width:640px){.grid,.todo ul,.twocol{grid-template-columns:minmax(0,1fr)}.board{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (max-width:860px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.road{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:640px){.grid,.todo ul,.twocol{grid-template-columns:minmax(0,1fr)}
   .gflow{grid-template-columns:minmax(0,1fr)}.gflow .arrow{transform:rotate(90deg);justify-self:center}
-  .split{grid-template-columns:minmax(0,1fr)}.split .arrow{transform:rotate(90deg);justify-self:center}}
-@media (max-width:400px){.tiles,.road{grid-template-columns:minmax(0,1fr)}.rew{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  .rew{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:400px){.tiles,.road{grid-template-columns:minmax(0,1fr)}}
 @media (prefers-reduced-motion:reduce){.prog .bar i{transition:none}}
 </style>
 </head>
@@ -209,44 +368,201 @@ footer a{color:var(--accent)}
   <header>
     <span class="eyebrow">짐승특공대 문파 공지</span>
     <h1>11/18(수) 업데이트 브리핑</h1>
-    <p class="sub">11/17(화) 정기 라이브 내용을 그림으로 정리했어요. 수치는 18일 점검 후 공식 공지가 나오면 다시 맞춰 볼게요.</p>
+    <p class="sub">오늘 점검 후 올라온 공식 업데이트 안내 기준으로 정리했어요. 어제 라이브 내용과 다른 곳은 공식 기준으로 고쳤어요.</p>
     <div class="meta">
-      <span class="chip">방송 11/17 19:00~20:35</span>
-      <span class="chip">기준: 방송 자막 · 공식 사전 안내</span>
-      <span class="chip"><span class="tbc">확인 중</span> 18일 공지로 다시 확인할 항목</span>
+      <span class="chip ok">공식 패치노트 반영 · 11/18 11:30</span>
+      <span class="chip ok">도술 트리 · 추천 덱 (13:50 처치 수 기준)</span>
+      <span class="chip"><span class="fix">정정</span> 라이브 때와 달라진 부분</span>
+      <span class="chip"><span class="tbc">미확인</span> 공지에 아직 없는 부분</span>
     </div>
   </header>
 
   <section class="tiles" aria-label="핵심 요약">
-    <div class="tile hl"><span class="ic" aria-hidden="true">🔄</span><span class="k">도술</span><span class="v">초기화 1주일 무료</span><span class="d">18일부터 초기화·돌파 교체 무제한 무료</span></div>
-    <div class="tile"><span class="ic" aria-hidden="true">⚔️</span><span class="k">차원 점령전</span><span class="v">화요일 21:10</span><span class="d">일요일 1시간 → 화요일 30분</span></div>
-    <div class="tile"><span class="ic" aria-hidden="true">🗺️</span><span class="k">사냥</span><span class="v">제자리 사냥 삭제</span><span class="d">사냥터 6곳은 '깊은 곳'으로 나뉨</span></div>
-    <div class="tile"><span class="ic" aria-hidden="true">🎯</span><span class="k">돌파</span><span class="v">실패하면 천장</span><span class="d">실패가 쌓이면 다음은 100% 성공</span></div>
+    <div class="tile hl"><span class="ic" aria-hidden="true">🔄</span><span class="k">도술</span><span class="v">초기화 무료 ~11/25</span><span class="d">강화 초기화·돌파 교체, 25일 정기 점검 전까지</span></div>
+    <div class="tile"><span class="ic" aria-hidden="true">⚔️</span><span class="k">차원 점령전</span><span class="v">화 21:30~22:04</span><span class="d">준비 21:10부터, 점령 10분 × 3번</span></div>
+    <div class="tile"><span class="ic" aria-hidden="true">🗺️</span><span class="k">사냥</span><span class="v">'깊은 곳' 6곳</span><span class="d">제자리 사냥 삭제, 비경 전투력 제한</span></div>
+    <div class="tile"><span class="ic" aria-hidden="true">🎁</span><span class="k">점검 보상</span><span class="v">오늘 23:59까지</span><span class="d">접속하면 GM의 선물 상자 3 우편 지급</span></div>
   </section>
 
   <section class="todo" aria-labelledby="todo-h">
     <div class="todo-top">
       <h2 id="todo-h">이번 주 할 일</h2>
-      <div class="prog"><span id="pcount">0 / 6</span><span class="bar"><i id="pbar"></i></span></div>
+      <div class="prog"><span id="pcount">0 / 7</span><span class="bar"><i id="pbar"></i></span></div>
     </div>
     <ul>
-      <li><label><input type="checkbox" id="t1"><span><span class="when">18일</span>점검 후 <b>우편함 보상</b> 받기 (돌파 환급 포함)</span></label></li>
-      <li><label><input type="checkbox" id="t2"><span><span class="when">18일</span>가방의 옛날 <b>도술 요령서</b>를 제작 메뉴에서 통합 요령서로 바꾸기</span></label></li>
-      <li><label><input type="checkbox" id="t3"><span><span class="when">~1주일</span>무료 기간 안에 <b>도술 초기화·돌파 교체</b>로 덱 다시 짜 보기</span></label></li>
-      <li><label><input type="checkbox" id="t4"><span><span class="when">매주 화</span><b>21:10</b> 차원 점령전 입장 (화요일 낙화 보스전 없음)</span></label></li>
-      <li><label><input type="checkbox" id="t5"><span><span class="when">18일~</span>사냥 전 세계지도에서 <b>깊은 곳·스팟 위치</b> 확인</span></label></li>
-      <li><label><input type="checkbox" id="t6"><span><span class="when">매주</span>문파 콘텐츠 참여 → <b>무용의 증표</b>로 문파 개인 상점</span></label></li>
+      <li><label><input type="checkbox" id="t1"><span><span class="when">오늘 23:59</span>접속해서 <b>GM의 선물 상자 3</b>·<b>돌파 환급</b> 우편 받기</span></label></li>
+      <li><label><input type="checkbox" id="t2"><span><span class="when">아무 때나</span>옛 요령서를 <b>제작 › 성장 재료 › 도술 강화 재료</b>에서 통합 요령서로 변환</span></label></li>
+      <li><label><input type="checkbox" id="t3"><span><span class="when">~11/25</span>무료 기간 안에 <b>강화 초기화·돌파 교체</b>로 덱 다시 짜기</span></label></li>
+      <li><label><input type="checkbox" id="t4"><span><span class="when">매주 화</span><b>21:10</b> 차원 점령전 준비 입장 (화요일 낙화 보스 없음)</span></label></li>
+      <li><label><input type="checkbox" id="t5"><span><span class="when">오늘~</span>사냥터 옮기기 전 <b>깊은 곳 권장 전투력</b> 확인</span></label></li>
+      <li><label><input type="checkbox" id="t6"><span><span class="when">매주</span><b>깊은 곳 주간 임무</b>(요귀 400마리) → 영웅 재조율권 선택 상자 2개</span></label></li>
+      <li><label><input type="checkbox" id="t7"><span><span class="when">~12/2</span><b>뚝딱! 도깨비 빙고</b> 이벤트 매일 미션 챙기기</span></label></li>
     </ul>
     <p class="note">체크 표시는 이 기기에만 저장돼요.</p>
   </section>
 
   <div class="grid">
 
+    <!-- 도술 -->
+    <section class="card wide" aria-labelledby="bal-h">
+      <div class="card-h"><h3 id="bal-h">🔄 도술 피해량, 이만큼 바뀌어요</h3><span class="tag">공식 수치</span></div>
+      <div class="legend"><span class="ld">피해량 감소</span><span class="lu">피해량 증가</span></div>
+      <div class="tw">
+        <div class="dv" role="img" aria-label="도술별 피해량 변화율. 천벌 -60%, 검기 폭발 -35%, 검기 날리기 -25%, 대검 강타 -15%, 휩쓸어 베기·쌍검 가르기 +35% 등">
+          <div class="dvax"><span></span><span><em>-60%</em><em>0</em></span><span><em></em><em>+60%</em></span><span></span></div>
+          <div class="dr"><span class="nm">천벌</span><span class="neg"><i style="width:100%"></i></span><span class="pos"></span><span class="vl d">-60%</span></div>
+          <div class="dr"><span class="nm">검기 폭발</span><span class="neg"><i style="width:58.3%"></i></span><span class="pos"></span><span class="vl d">-35%</span></div>
+          <div class="dr"><span class="nm">검기 날리기</span><span class="neg"><i style="width:41.7%"></i></span><span class="pos"></span><span class="vl d">-25%</span></div>
+          <div class="dr"><span class="nm">대검 강타</span><span class="neg"><i style="width:25%"></i></span><span class="pos"></span><span class="vl d">-15%</span></div>
+          <div class="dr"><span class="nm">용사비등 (PvE)</span><span class="neg"><i style="width:25%"></i></span><span class="pos"></span><span class="vl d">-15%</span></div>
+          <div class="dr"><span class="nm">묵영점정 (PvE)</span><span class="neg"><i style="width:16.7%"></i></span><span class="pos"></span><span class="vl d">-10%</span></div>
+          <div class="dr"><span class="nm">신벌의 영역</span><span class="neg"><i style="width:16.7%"></i></span><span class="pos"></span><span class="vl d">약 -10%</span></div>
+          <div class="dr"><span class="nm">휩쓸어 베기</span><span class="neg"></span><span class="pos"><i style="width:58.3%"></i></span><span class="vl u">약 +35%</span></div>
+          <div class="dr"><span class="nm">쌍검 가르기</span><span class="neg"></span><span class="pos"><i style="width:58.3%"></i></span><span class="vl u">약 +35%</span></div>
+          <div class="dr"><span class="nm">암습</span><span class="neg"></span><span class="pos"><i style="width:50%"></i></span><span class="vl u">+30%</span></div>
+          <div class="dr"><span class="nm">낙뢰</span><span class="neg"></span><span class="pos"><i style="width:50%"></i></span><span class="vl u">+30%</span></div>
+          <div class="dr"><span class="nm">화염 분출</span><span class="neg"></span><span class="pos"><i style="width:50%"></i></span><span class="vl u">+30%</span></div>
+          <div class="dr"><span class="nm">붕괴하는 대지</span><span class="neg"></span><span class="pos"><i style="width:50%"></i></span><span class="vl u">+30%</span></div>
+          <div class="dr"><span class="nm">날카로운 얼음창</span><span class="neg"></span><span class="pos"><i style="width:41.7%"></i></span><span class="vl u">+25%</span></div>
+          <div class="dr"><span class="nm">광기의 칼놀림</span><span class="neg"></span><span class="pos"><i style="width:33.3%"></i></span><span class="vl u">약 +20%</span></div>
+          <div class="dr"><span class="nm">일섬</span><span class="neg"></span><span class="pos"><i style="width:25%"></i></span><span class="vl u">+15%</span></div>
+          <div class="dr"><span class="nm">월식</span><span class="neg"></span><span class="pos"><i style="width:25%"></i></span><span class="vl u">약 +15%</span></div>
+          <div class="dr"><span class="nm">저주 내리기</span><span class="neg"></span><span class="pos"><i style="width:16.7%"></i></span><span class="vl u">약 +10%</span></div>
+          <div class="dr"><span class="nm">솟아오르는 창</span><span class="neg"></span><span class="pos"><i style="width:16.7%"></i></span><span class="vl u">+10%</span></div>
+        </div>
+      </div>
+      <div class="twocol">
+        <div class="stack">
+          <span class="sublbl">피해량 말고 바뀌는 것</span>
+          <ul>
+            <li><b>천벌</b>: 차지 없이 항상 풀차지, 방향 돌진 → 지정 위치 도약</li>
+            <li><b>대검 강타</b>: 풀차지 공격력 +10%, 3인 이상 타격 시 +50% 효과 제거. 6돌파 효과는 30% → 40%</li>
+            <li><b>검기 폭발</b>: 사용 시 방어력 +10% 효과 제거</li>
+            <li><b>신벌의 영역</b>: 재사용 17초 → 12초, 타격 12회 → 6회 (1회 피해↑, 총 피해 약 -10%)</li>
+            <li><b>연타 신식·격노</b>: 1중첩당 보스 피해 +0.4%, 50중첩 최대 +20%</li>
+            <li><b>척살 신식</b>: 요귀 처치 시 영력 10 (도사 처치는 100 그대로)</li>
+            <li><b>월식</b> 최대 대상 6 → 8명, <b>쌍검 가르기</b> 4 → 6명</li>
+          </ul>
+        </div>
+        <div class="stack">
+          <span class="sublbl">최대 공격 대상 5 → 6명</span>
+          <div class="tagcloud"><span>휩쓸어 베기</span><span>연속 쇄도</span><span>회전 난격</span><span>저주 내리기</span><span>신벌의 영역</span><span>영혼 소용돌이</span><span>신내림</span><span>낙뢰</span><span>연쇄 번개</span><span>화염 분출</span><span>날카로운 얼음창</span><span>붕괴하는 대지</span><span>번개 폭풍</span><span>광기의 칼놀림</span><span>솟아오르는 창</span><span>공간 결계</span></div>
+          <p class="note">공식 패치노트는 계열이 아니라 도술 이름별로 나와 있어요. 연속 쇄도·연쇄 번개·번개 폭풍처럼 대상 수만 늘어난 도술도 많아요.</p>
+          <span class="sublbl">앞으로의 조정 주기 (매월, 라이브 발표)</span>
+          <div class="cal"><div class="wk"><b>1주</b>유지</div><div class="wk"><b>2주</b>유지</div><div class="wk on"><b>3주</b>정기 조정</div><div class="wk on"><b>4주</b>정기 조정</div></div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- 도술 트리 -->
+    <section class="card wide" aria-labelledby="tree-h">
+      <div class="card-h"><h3 id="tree-h">🌳 도술 트리</h3><span class="tag">11/18 패치 반영 · 눌러서 펼치기</span></div>
+      <div class="tctl">
+        <div class="tfil" role="group" aria-label="표시 필터">
+          <button data-f="all" aria-pressed="true">전체</button>
+          <button data-f="up" aria-pressed="false">▲ 상향</button>
+          <button data-f="dn" aria-pressed="false">▼ 하향</button>
+          <button data-f="tg" aria-pressed="false">대상 수 증가</button>
+          <button data-f="hot" aria-pressed="false">🔥 유저 덱 단골</button>
+        </div>
+        <div class="tdeck">
+          <label for="tdeck">덱 겹쳐 보기</label>
+          <select id="tdeck"><option value="">선택 안 함</option></select>
+          <button id="texp" type="button">모두 펼치기</button><button id="tcol" type="button">접기</button>
+        </div>
+      </div>
+      <div class="tviz">
+        <div class="tsvg-wrap" id="tsvgw"><svg id="tsvg" role="img" aria-label="도술 12계열 트리. 계열을 누르면 도술이 펼쳐지고, 도술을 누르면 오른쪽에 상세 정보가 나와요."></svg></div>
+        <aside class="tinfo" id="tinfo" aria-live="polite"><p class="note">도술을 누르면 여기에 상세 정보가 나와요. 계열을 누르면 펼치거나 접어요.</p></aside>
+      </div>
+      <div class="legend"><span class="lu">상향</span><span class="ld">하향</span><span class="lt">대상 수 증가</span><span class="ls">★ 궁극</span><span class="lk2">선택한 덱</span></div>
+      <p class="note">용도 묶음은 패치 후 유저 덱에서 주로 쓰이는 쪽 기준. 🔥 = 11/18 이후 깨비지지 유저 덱 15개 중 넣은 덱 수. 1회 피해·대상·재사용은 깨비지지 도술 데이터(0강·0돌, 풀차지).</p>
+      <script type="application/json" id="tdata">{"tree": {"n": "도술 12계열", "k": "root", "c": [{"n": "광역 사냥", "k": "group", "c": [{"n": "파멸", "k": "style", "c": [{"n": "대폭발", "k": "skill", "u": 1, "st": "파멸", "dn": null, "up": null, "tg": null, "new": false, "hot": 7, "cd": 50.0, "tot": 972.6, "mt": 30}, {"n": "하늘의 심판", "k": "skill", "u": 0, "st": "파멸", "dn": null, "up": null, "tg": null, "new": false, "hot": 12, "cd": 12.0, "tot": 216.3, "mt": 4}, {"n": "요기 폭발", "k": "skill", "u": 0, "st": "파멸", "dn": null, "up": null, "tg": null, "new": false, "hot": 11, "cd": 10.0, "tot": 178.4, "mt": 10}, {"n": "번개 폭풍", "k": "skill", "u": 0, "st": "파멸", "dn": null, "up": null, "tg": "5→6", "new": false, "hot": 6, "cd": 10.0, "tot": 179.1, "mt": 6}, {"n": "연쇄 번개", "k": "skill", "u": 0, "st": "파멸", "dn": null, "up": null, "tg": "5→6", "new": false, "hot": 6, "cd": 8.0, "tot": 142.0, "mt": 6}, {"n": "화염 분출", "k": "skill", "u": 0, "st": "파멸", "dn": null, "up": 30, "tg": "5→6", "new": false, "hot": 3, "cd": 9.0, "tot": 208.2, "mt": 6}, {"n": "붕괴하는 대지", "k": "skill", "u": 0, "st": "파멸", "dn": null, "up": 30, "tg": "5→6", "new": false, "hot": 2, "cd": 9.0, "tot": 208.2, "mt": 6}, {"n": "낙뢰", "k": "skill", "u": 0, "st": "파멸", "dn": null, "up": 30, "tg": "5→6", "new": false, "hot": 1, "cd": 8.0, "tot": 184.6, "mt": 6}, {"n": "날카로운 얼음창", "k": "skill", "u": 0, "st": "파멸", "dn": null, "up": 25, "tg": "5→6", "new": false, "hot": 0, "cd": 8.0, "tot": 177.5, "mt": 6}, {"n": "서리의 잔향", "k": "skill", "u": 0, "st": "파멸", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 10.0, "tot": 151.0, "mt": 1}, {"n": "얼음화살", "k": "skill", "u": 0, "st": "파멸", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 6.0, "tot": 107.0, "mt": 5}, {"n": "요혼격", "k": "skill", "u": 0, "st": "파멸", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 10.0, "tot": 160.3, "mt": 1}, {"n": "화염구", "k": "skill", "u": 0, "st": "파멸", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 11.0, "tot": 196.7, "mt": 5}]}, {"n": "기만", "k": "style", "c": [{"n": "회전하는 칼날", "k": "skill", "u": 1, "st": "기만", "dn": null, "up": null, "tg": null, "new": false, "hot": 4, "cd": 60.0, "tot": 2044.0, "mt": 7}, {"n": "공간 결계", "k": "skill", "u": 0, "st": "기만", "dn": null, "up": null, "tg": "5→6", "new": false, "hot": 7, "cd": 15.0, "tot": 251.6, "mt": 6}, {"n": "환상술", "k": "skill", "u": 0, "st": "기만", "dn": null, "up": null, "tg": null, "new": false, "hot": 5, "cd": 18.0, "tot": 329.9, "mt": 5}, {"n": "솟아오르는 창", "k": "skill", "u": 0, "st": "기만", "dn": null, "up": 10, "tg": "5→6", "new": false, "hot": 4, "cd": 16.0, "tot": 335.7, "mt": 6}, {"n": "광기의 칼놀림", "k": "skill", "u": 0, "st": "기만", "dn": null, "up": 20, "tg": "5→6", "new": false, "hot": 0, "cd": 13.0, "tot": 247.5, "mt": 6}, {"n": "슬쩍 베기", "k": "skill", "u": 0, "st": "기만", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 12.0, "tot": 243.1, "mt": 1}, {"n": "어지럼 유발", "k": "skill", "u": 0, "st": "기만", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 10.0, "tot": 191.0, "mt": 5}, {"n": "간파의 눈", "k": "skill", "u": 0, "st": "기만", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": null, "tot": null, "mt": null}]}, {"n": "강타", "k": "style", "c": [{"n": "천벌", "k": "skill", "u": 1, "st": "강타", "dn": -60, "up": null, "tg": null, "new": false, "hot": 1, "cd": 45.0, "tot": 934.1, "mt": 20}, {"n": "검기 폭발", "k": "skill", "u": 0, "st": "강타", "dn": -35, "up": null, "tg": null, "new": false, "hot": 3, "cd": 13.0, "tot": 331.1, "mt": 10}, {"n": "검기 날리기", "k": "skill", "u": 0, "st": "강타", "dn": -25, "up": null, "tg": null, "new": false, "hot": 2, "cd": 11.0, "tot": 321.2, "mt": 10}, {"n": "돌풍 강격", "k": "skill", "u": 0, "st": "강타", "dn": null, "up": null, "tg": null, "new": false, "hot": 2, "cd": 11.0, "tot": 268.2, "mt": 10}, {"n": "크게 베기", "k": "skill", "u": 0, "st": "강타", "dn": null, "up": null, "tg": null, "new": false, "hot": 1, "cd": 10.0, "tot": 285.2, "mt": 10}, {"n": "연속 충격", "k": "skill", "u": 0, "st": "강타", "dn": null, "up": null, "tg": null, "new": false, "hot": 1, "cd": 9.0, "tot": 302.4, "mt": 10}, {"n": "내려치기", "k": "skill", "u": 0, "st": "강타", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 6.0, "tot": 140.1, "mt": 10}, {"n": "올려치기", "k": "skill", "u": 0, "st": "강타", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 6.5, "tot": 156.0, "mt": 10}, {"n": "대검 찍기", "k": "skill", "u": 0, "st": "강타", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 7.0, "tot": 165.1, "mt": 10}, {"n": "휘둘러치기", "k": "skill", "u": 0, "st": "강타", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 8.0, "tot": 188.7, "mt": 10}, {"n": "대검 강타", "k": "skill", "u": 0, "st": "강타", "dn": -15, "up": null, "tg": null, "new": false, "hot": 0, "cd": 12.0, "tot": 402.4, "mt": 12}]}, {"n": "주술", "k": "style", "c": [{"n": "신내림", "k": "skill", "u": 1, "st": "주술", "dn": null, "up": null, "tg": "5→6", "new": false, "hot": 0, "cd": 60.0, "tot": 1074.6, "mt": 6}, {"n": "부적 던지기", "k": "skill", "u": 0, "st": "주술", "dn": null, "up": null, "tg": null, "new": false, "hot": 2, "cd": 4.5, "tot": 99.1, "mt": 2}, {"n": "살 날리기", "k": "skill", "u": 0, "st": "주술", "dn": null, "up": null, "tg": null, "new": false, "hot": 1, "cd": 5.0, "tot": 110.3, "mt": 2}, {"n": "저주 내리기", "k": "skill", "u": 0, "st": "주술", "dn": null, "up": 10, "tg": "5→6", "new": false, "hot": 1, "cd": 14.0, "tot": 279.0, "mt": 6}, {"n": "신벌의 영역", "k": "skill", "u": 0, "st": "주술", "dn": -10, "up": null, "tg": "5→6", "new": false, "hot": 0, "cd": 12.0, "tot": 279.6, "mt": 6}, {"n": "영혼 소용돌이", "k": "skill", "u": 0, "st": "주술", "dn": null, "up": null, "tg": "5→6", "new": false, "hot": 0, "cd": 20.0, "tot": 368.2, "mt": 6}, {"n": "황천의 부름", "k": "skill", "u": 0, "st": "주술", "dn": null, "up": null, "tg": null, "new": true, "hot": 0, "cd": 30, "tot": 101.9, "mt": 2}]}, {"n": "기동", "k": "style", "c": [{"n": "연속 쇄도", "k": "skill", "u": 1, "st": "기동", "dn": null, "up": null, "tg": "5→6", "new": false, "hot": 0, "cd": 30.0, "tot": 1190.0, "mt": 6}, {"n": "쌍검 가르기", "k": "skill", "u": 0, "st": "기동", "dn": null, "up": 35, "tg": "4→6", "new": false, "hot": 1, "cd": 10.0, "tot": 257.4, "mt": 6}, {"n": "월식", "k": "skill", "u": 0, "st": "기동", "dn": null, "up": 15, "tg": "6→8", "new": false, "hot": 1, "cd": 12.0, "tot": 177.2, "mt": 8}, {"n": "일섬", "k": "skill", "u": 0, "st": "기동", "dn": null, "up": 15, "tg": null, "new": false, "hot": 1, "cd": 11.0, "tot": 242.6, "mt": 6}, {"n": "급소 관통", "k": "skill", "u": 0, "st": "기동", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 10.0, "tot": 189.9, "mt": 1}, {"n": "도약 찌르기", "k": "skill", "u": 0, "st": "기동", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 8.0, "tot": 152.2, "mt": 1}, {"n": "후퇴 사격", "k": "skill", "u": 0, "st": "기동", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 8.0, "tot": 151.7, "mt": 5}, {"n": "휩쓸어 베기", "k": "skill", "u": 0, "st": "기동", "dn": null, "up": 35, "tg": "5→6", "new": false, "hot": 0, "cd": 9.0, "tot": 232.6, "mt": 6}]}, {"n": "연타", "k": "style", "c": [{"n": "폭주", "k": "skill", "u": 1, "st": "연타", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 50.0, "tot": 1847.8, "mt": 5}, {"n": "휘둘러 내려치기", "k": "skill", "u": 0, "st": "연타", "dn": null, "up": null, "tg": null, "new": false, "hot": 1, "cd": 6.0, "tot": 174.3, "mt": 1}, {"n": "주먹 지르기", "k": "skill", "u": 0, "st": "연타", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 7.0, "tot": 204.0, "mt": 1}, {"n": "묵직한 주먹", "k": "skill", "u": 0, "st": "연타", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 9.0, "tot": 157.9, "mt": 1}, {"n": "연쇄 타격", "k": "skill", "u": 0, "st": "연타", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 8.0, "tot": 196.0, "mt": 5}, {"n": "회전 난격", "k": "skill", "u": 0, "st": "연타", "dn": null, "up": null, "tg": "5→6", "new": false, "hot": 0, "cd": 10.0, "tot": 251.7, "mt": 6}, {"n": "집중 연타", "k": "skill", "u": 0, "st": "연타", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 9.0, "tot": 291.0, "mt": 1}, {"n": "난타", "k": "skill", "u": 0, "st": "연타", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 11.0, "tot": 277.2, "mt": 10}]}]}, {"n": "단일 · 보스", "k": "group", "c": [{"n": "절명", "k": "style", "c": [{"n": "암습", "k": "skill", "u": 1, "st": "절명", "dn": null, "up": 30, "tg": null, "new": false, "hot": 2, "cd": 30.0, "tot": 1551.3, "mt": 1}, {"n": "내려찍기", "k": "skill", "u": 0, "st": "절명", "dn": null, "up": null, "tg": null, "new": false, "hot": 2, "cd": 8.0, "tot": 226.4, "mt": 1}, {"n": "찌르기", "k": "skill", "u": 0, "st": "절명", "dn": null, "up": null, "tg": null, "new": false, "hot": 2, "cd": 8.0, "tot": 225.5, "mt": 1}, {"n": "연속 찌르기", "k": "skill", "u": 0, "st": "절명", "dn": null, "up": null, "tg": null, "new": false, "hot": 1, "cd": 7.0, "tot": 197.1, "mt": 1}, {"n": "기습", "k": "skill", "u": 0, "st": "절명", "dn": null, "up": null, "tg": null, "new": false, "hot": 1, "cd": 16.0, "tot": 461.6, "mt": 1}, {"n": "환영 참격", "k": "skill", "u": 0, "st": "절명", "dn": null, "up": null, "tg": null, "new": false, "hot": 1, "cd": 8.0, "tot": 227.9, "mt": 1}, {"n": "심장 절단", "k": "skill", "u": 0, "st": "절명", "dn": null, "up": null, "tg": null, "new": false, "hot": 1, "cd": 8.0, "tot": 227.7, "mt": 1}, {"n": "삼단 찌르기", "k": "skill", "u": 0, "st": "절명", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 6.0, "tot": 169.3, "mt": 1}, {"n": "약점 베기", "k": "skill", "u": 0, "st": "절명", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 12.0, "tot": 343.9, "mt": 1}, {"n": "은신", "k": "skill", "u": 0, "st": "절명", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": null, "tot": null, "mt": null}]}, {"n": "저격", "k": "style", "c": [{"n": "정조준", "k": "skill", "u": 1, "st": "저격", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 40.0, "tot": 1579.4, "mt": 1}, {"n": "이중 사격", "k": "skill", "u": 0, "st": "저격", "dn": null, "up": null, "tg": null, "new": false, "hot": 2, "cd": 5.5, "tot": 163.2, "mt": 1}, {"n": "꿰뚫는 저격", "k": "skill", "u": 0, "st": "저격", "dn": null, "up": null, "tg": null, "new": false, "hot": 2, "cd": 15.0, "tot": 457.8, "mt": 5}, {"n": "사격", "k": "skill", "u": 0, "st": "저격", "dn": null, "up": null, "tg": null, "new": false, "hot": 1, "cd": 4.5, "tot": 133.2, "mt": 1}, {"n": "쇠뇌 사격", "k": "skill", "u": 0, "st": "저격", "dn": null, "up": null, "tg": null, "new": false, "hot": 1, "cd": 5.0, "tot": 148.4, "mt": 1}, {"n": "밀쳐내는 화살", "k": "skill", "u": 0, "st": "저격", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 9.0, "tot": 215.8, "mt": 1}, {"n": "반동 사격", "k": "skill", "u": 0, "st": "저격", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 8.0, "tot": 238.9, "mt": 1}, {"n": "쐐기 화살", "k": "skill", "u": 0, "st": "저격", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 12.0, "tot": 296.2, "mt": 1}, {"n": "일점 저격", "k": "skill", "u": 0, "st": "저격", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 15.0, "tot": 557.2, "mt": 1}, {"n": "집중 사격", "k": "skill", "u": 0, "st": "저격", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 8.0, "tot": 239.6, "mt": 1}, {"n": "폭발하는 화살", "k": "skill", "u": 0, "st": "저격", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 12.0, "tot": 362.7, "mt": 1}]}, {"n": "척살", "k": "style", "c": [{"n": "일필휘지", "k": "skill", "u": 1, "st": "척살", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 50.0, "tot": 1737.2, "mt": 1}, {"n": "먹 베기", "k": "skill", "u": 0, "st": "척살", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 7.0, "tot": 217.6, "mt": 1}, {"n": "삼묵법", "k": "skill", "u": 0, "st": "척살", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 9.0, "tot": 285.1, "mt": 1}, {"n": "무수불축", "k": "skill", "u": 0, "st": "척살", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 8.0, "tot": 253.2, "mt": 1}, {"n": "필력종횡", "k": "skill", "u": 0, "st": "척살", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 7.0, "tot": 219.2, "mt": 1}, {"n": "묵영점정", "k": "skill", "u": 0, "st": "척살", "dn": -10, "up": null, "tg": null, "new": false, "hot": 0, "cd": 12.0, "tot": 345.7, "mt": 1}, {"n": "용사비등", "k": "skill", "u": 0, "st": "척살", "dn": -15, "up": null, "tg": null, "new": false, "hot": 0, "cd": 10.0, "tot": 268.9, "mt": 1}]}]}, {"n": "생존 · 보조", "k": "group", "c": [{"n": "헌신", "k": "style", "c": [{"n": "개전의 가호", "k": "skill", "u": 1, "st": "헌신", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 90.0, "tot": 722.0, "mt": 1}, {"n": "생명의 흐름", "k": "skill", "u": 0, "st": "헌신", "dn": null, "up": null, "tg": null, "new": false, "hot": 13, "cd": 15.0, "tot": 0.0, "mt": 0}, {"n": "용맹의 기운", "k": "skill", "u": 0, "st": "헌신", "dn": null, "up": null, "tg": null, "new": false, "hot": 3, "cd": 30.0, "tot": 151.8, "mt": 5}, {"n": "생명의 축복", "k": "skill", "u": 0, "st": "헌신", "dn": null, "up": null, "tg": null, "new": false, "hot": 1, "cd": null, "tot": null, "mt": null}, {"n": "불굴", "k": "skill", "u": 0, "st": "헌신", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 20.0, "tot": 137.3, "mt": 1}, {"n": "산들 바람", "k": "skill", "u": 0, "st": "헌신", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 20.0, "tot": 137.5, "mt": 1}, {"n": "최후의 저항", "k": "skill", "u": 0, "st": "헌신", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": null, "tot": null, "mt": null}]}, {"n": "강인", "k": "style", "c": [{"n": "방패 낙하", "k": "skill", "u": 1, "st": "강인", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 80.0, "tot": 1277.9, "mt": 10}, {"n": "방패 밀기", "k": "skill", "u": 0, "st": "강인", "dn": null, "up": null, "tg": null, "new": false, "hot": 10, "cd": 15.0, "tot": 204.3, "mt": 1}, {"n": "방패 충격파", "k": "skill", "u": 0, "st": "강인", "dn": null, "up": null, "tg": null, "new": false, "hot": 3, "cd": 20.0, "tot": 275.7, "mt": 5}, {"n": "강인한 의지", "k": "skill", "u": 0, "st": "강인", "dn": null, "up": null, "tg": null, "new": false, "hot": 2, "cd": 30.0, "tot": 245.0, "mt": 5}, {"n": "방패 내려찍기", "k": "skill", "u": 0, "st": "강인", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 20.0, "tot": 134.8, "mt": 5}, {"n": "방패 치기", "k": "skill", "u": 0, "st": "강인", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 14.0, "tot": 190.2, "mt": 1}, {"n": "전투의 함성", "k": "skill", "u": 0, "st": "강인", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 70.0, "tot": 211.7, "mt": 5}]}, {"n": "제압", "k": "style", "c": [{"n": "사슬 묶기", "k": "skill", "u": 1, "st": "제압", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 30.0, "tot": 957.6, "mt": 5}, {"n": "도깨비 불", "k": "skill", "u": 0, "st": "제압", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 13.0, "tot": 177.0, "mt": 1}, {"n": "머리치기", "k": "skill", "u": 0, "st": "제압", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 16.0, "tot": 183.3, "mt": 5}, {"n": "쇠사슬 가시", "k": "skill", "u": 0, "st": "제압", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 25.0, "tot": 232.6, "mt": 1}, {"n": "얼음 감옥", "k": "skill", "u": 0, "st": "제압", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 35.0, "tot": 208.8, "mt": 1}, {"n": "응축하는 바람", "k": "skill", "u": 0, "st": "제압", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 18.0, "tot": 205.8, "mt": 1}, {"n": "지진", "k": "skill", "u": 0, "st": "제압", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 22.0, "tot": 207.4, "mt": 5}, {"n": "회전 일격", "k": "skill", "u": 0, "st": "제압", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 20.0, "tot": 209.2, "mt": 5}, {"n": "얼어붙은 대지", "k": "skill", "u": 0, "st": "제압", "dn": null, "up": null, "tg": null, "new": false, "hot": 0, "cd": 28.0, "tot": 232.4, "mt": 10}]}]}]}, "decks": {"보스 · 절명 602%": ["휘둘러 내려치기", "이중 사격", "사격", "찌르기", "크게 베기", "암습", "쇠뇌 사격", "내려찍기", "삼단 찌르기"], "보스 · 연타 494%": ["묵직한 주먹", "꿰뚫는 저격", "주먹 지르기", "찌르기", "이중 사격", "폭발하는 화살", "기습", "집중 연타", "폭주"], "보스 · 저격 492%": ["먹 베기", "꿰뚫는 저격", "연속 충격", "기습", "환영 참격", "일점 저격", "묵직한 주먹", "정조준", "폭발하는 화살"], "사냥 · 연타 162": ["생명의 흐름", "방패 밀기", "난타", "회전 난격", "연쇄 타격", "연속 충격", "대검 찍기", "크게 베기", "폭주"], "사냥 · 기만 160": ["생명의 흐름", "방패 밀기", "환상술", "공간 결계", "솟아오르는 창", "연속 충격", "크게 베기", "검기 날리기", "회전하는 칼날"], "사냥 · 강타 160": ["생명의 흐름", "방패 밀기", "연속 충격", "대검 강타", "크게 베기", "휘둘러치기", "회전 난격", "돌풍 강격", "천벌"], "사냥 · 파멸 156": ["생명의 흐름", "방패 밀기", "화염구", "화염 분출", "붕괴하는 대지", "연속 충격", "크게 베기", "난타", "대폭발"], "유저 · 앤단덱2 쿨탐무한광역": ["생명의 흐름", "방패 밀기", "대폭발", "하늘의 심판", "요기 폭발", "연쇄 번개", "돌풍 강격", "검기 폭발", "검기 날리기"], "유저 · 킹무 기만덱": ["용맹의 기운", "생명의 흐름", "하늘의 심판", "방패 밀기", "환상술", "공간 결계", "솟아오르는 창", "검기 폭발", "회전하는 칼날"], "유저 · 상향 받은 올 파멸": ["생명의 흐름", "방패 밀기", "낙뢰", "하늘의 심판", "번개 폭풍", "요기 폭발", "화염 분출", "붕괴하는 대지", "대폭발"], "유저 · 유희3 기만": ["용맹의 기운", "생명의 흐름", "하늘의 심판", "환상술", "공간 결계", "요기 폭발", "솟아오르는 창", "연쇄 번개", "회전하는 칼날"]}}</script>
+    </section>
+
+    <!-- 추천 덱 -->
+    <section class="card wide" aria-labelledby="deck-h">
+      <div class="card-h"><h3 id="deck-h">🧮 패치 후 추천 덱</h3><span class="tag">보스 = 딜 · 사냥 = 1분 처치 수 · 11/18 계수</span></div>
+      <p class="note">깨비지지 덱 빌더가 쓰는 1분 전투 계산 엔진(11/18 계수, 신식·상태이상·시전 시간 포함, 0돌파·사이트 기본 강화)을 그대로 돌려서, 계열마다 8칸을 한 칸씩 바꿔 가며 가장 높은 조합을 찾았어요. 시전 순서도 엔진이 가장 높게 나오는 순서로 골랐어요.</p>
+      <div class="dtabs" role="tablist">
+        <button role="tab" aria-selected="true" data-p="p3">🐉 보스 (1:1)</button>
+        <button role="tab" aria-selected="false" data-p="p1">🗺️ 사냥 (광역)</button>
+      </div>
+      <div class="dpane" id="p3">
+        <div class="twocol">
+          <div class="stack"><span class="sublbl">계열별 최고 덱 · 1분 허수아비 피해 %</span><div class="bars"><div class="br"><span class="lb">절명</span><span class="tr"><i style="width:100%"></i></span><span class="vl">602%</span></div><div class="br"><span class="lb">연타</span><span class="tr"><i style="width:82%"></i></span><span class="vl">494%</span></div><div class="br"><span class="lb">저격</span><span class="tr"><i style="width:82%"></i></span><span class="vl">492%</span></div><div class="br"><span class="lb">강타</span><span class="tr"><i style="width:73%"></i></span><span class="vl">439%</span></div><div class="br"><span class="lb">주술</span><span class="tr"><i style="width:70%" class="o"></i></span><span class="vl">424%</span></div><div class="br"><span class="lb">파멸</span><span class="tr"><i style="width:70%" class="o"></i></span><span class="vl">421%</span></div><div class="br"><span class="lb">기만</span><span class="tr"><i style="width:65%" class="o"></i></span><span class="vl">391%</span></div><div class="br"><span class="lb">척살</span><span class="tr"><i style="width:60%" class="o"></i></span><span class="vl">364%</span></div><div class="br"><span class="lb">기동</span><span class="tr"><i style="width:60%" class="o"></i></span><span class="vl">362%</span></div><div class="br"><span class="lb">제압</span><span class="tr"><i style="width:50%" class="o"></i></span><span class="vl">300%</span></div><div class="br"><span class="lb">강인</span><span class="tr"><i style="width:43%" class="o"></i></span><span class="vl">261%</span></div><div class="br"><span class="lb">헌신</span><span class="tr"><i style="width:41%" class="o"></i></span><span class="vl">249%</span></div></div></div>
+          <div class="stack"><span class="sublbl">요약</span>
+            <ul><li><b>절명(암습) 602%</b>로 1위. 패치 후 유저 덱 최고(룽지 582%)보다 3% 높아요</li>
+            <li>연타·저격이 490%대로 2·3위, 강타 439%</li>
+            <li>어느 계열이든 <b>꿰뚫는 저격·찌르기·기습·일점 저격</b> 같은 단일기를 섞는 게 이득</li></ul></div>
+        </div>
+        <div class="bss"><div class="bs"><div class="bs-h"><span class="sty">절명</span><b>절명 · 암습</b><span class="v">602%</span></div><div class="ord"><span class="dc ">휘둘러 내려치기</span><span class="arr">›</span><span class="dc ">이중 사격</span><span class="arr">›</span><span class="dc ">사격</span><span class="arr">›</span><span class="dc ">찌르기</span><span class="arr">›</span><span class="dc ">크게 베기</span><span class="arr">›</span><span class="dc ultc">★ 암습</span><span class="arr">›</span><span class="dc ">쇠뇌 사격</span><span class="arr">›</span><span class="dc ">내려찍기</span><span class="arr">›</span><span class="dc ">삼단 찌르기</span></div><p class="note">기본 5칸: 내려찍기·찌르기·이중 사격·삼단 찌르기·크게 베기</p></div><div class="bs"><div class="bs-h"><span class="sty">연타</span><b>연타 · 폭주</b><span class="v">494%</span></div><div class="ord"><span class="dc ">묵직한 주먹</span><span class="arr">›</span><span class="dc ">꿰뚫는 저격</span><span class="arr">›</span><span class="dc ">주먹 지르기</span><span class="arr">›</span><span class="dc ">찌르기</span><span class="arr">›</span><span class="dc ">이중 사격</span><span class="arr">›</span><span class="dc ">폭발하는 화살</span><span class="arr">›</span><span class="dc ">기습</span><span class="arr">›</span><span class="dc ">집중 연타</span><span class="arr">›</span><span class="dc ultc">★ 폭주</span></div><p class="note">기본 5칸: 폭발하는 화살·꿰뚫는 저격·묵직한 주먹·주먹 지르기·집중 연타</p></div><div class="bs"><div class="bs-h"><span class="sty">저격</span><b>저격 · 정조준</b><span class="v">492%</span></div><div class="ord"><span class="dc ">먹 베기</span><span class="arr">›</span><span class="dc ">꿰뚫는 저격</span><span class="arr">›</span><span class="dc ">연속 충격</span><span class="arr">›</span><span class="dc ">기습</span><span class="arr">›</span><span class="dc ">환영 참격</span><span class="arr">›</span><span class="dc ">일점 저격</span><span class="arr">›</span><span class="dc ">묵직한 주먹</span><span class="arr">›</span><span class="dc ultc">★ 정조준</span><span class="arr">›</span><span class="dc ">폭발하는 화살</span></div><p class="note">기본 5칸: 폭발하는 화살·환영 참격·일점 저격·먹 베기·꿰뚫는 저격</p></div><div class="bs"><div class="bs-h"><span class="sty">강타</span><b>강타 · 천벌</b><span class="v">439%</span></div><div class="ord"><span class="dc ">찌르기</span><span class="arr">›</span><span class="dc ">크게 베기</span><span class="arr">›</span><span class="dc ">내려찍기</span><span class="arr">›</span><span class="dc ">대검 강타</span><span class="arr">›</span><span class="dc ">기습</span><span class="arr">›</span><span class="dc ">꿰뚫는 저격</span><span class="arr">›</span><span class="dc ">일점 저격</span><span class="arr">›</span><span class="dc ">검기 날리기</span><span class="arr">›</span><span class="dc ultc">★ 천벌</span></div><p class="note">기본 5칸: 내려찍기·찌르기·대검 강타·크게 베기·검기 날리기</p></div></div>
+        <p class="note">값은 사이트 기본 설정 기준이라 내 강화·돌파·능력치에 따라 순위가 바뀔 수 있어요. 덱 빌더에 그대로 넣으면 같은 숫자가 나와요.</p>
+      </div>
+      <div class="dpane" id="p1" hidden>
+        <div class="callout"><b>기준: 1분에 몇 마리 잡나.</b> 깨비지지 엔진의 시전 타임라인(언제 어떤 도술을 몇 % 피해로 쓰는지)을 그대로 가져와, 밀집 무리 8마리를 상대로 처치 수를 셌어요. 도술마다 <b>최대 대상 수</b>만큼만 맞고(5→6 상향 반영), 몹이 죽고 남는 피해는 버려지고, 죽으면 1초 뒤 새 몹이 들어와요. 몹 체력은 약함·보통·단단 3단계 평균이에요.</div>
+        <div class="twocol">
+          <div class="stack"><span class="sublbl">계열별 최고 덱 · 생존 2칸(생명의 흐름+방패 밀기) 고정 · 1분 처치 수 지수</span><div class="bars"><div class="br"><span class="lb">연타</span><span class="tr"><i style="width:100%"></i></span><span class="vl">162</span></div><div class="br"><span class="lb">기만</span><span class="tr"><i style="width:99%"></i></span><span class="vl">160</span></div><div class="br"><span class="lb">강타</span><span class="tr"><i style="width:99%"></i></span><span class="vl">160</span></div><div class="br"><span class="lb">파멸</span><span class="tr"><i style="width:96%"></i></span><span class="vl">156</span></div><div class="br"><span class="lb">궁극 없음</span><span class="tr"><i style="width:95%" class="o"></i></span><span class="vl">154</span></div><div class="br"><span class="lb">기동</span><span class="tr"><i style="width:88%" class="o"></i></span><span class="vl">142</span></div><div class="br"><span class="lb">주술</span><span class="tr"><i style="width:87%" class="o"></i></span><span class="vl">141</span></div><div class="br"><span class="lb">강인</span><span class="tr"><i style="width:79%" class="o"></i></span><span class="vl">128</span></div></div></div>
+          <div class="stack"><span class="sublbl">읽는 법</span>
+            <ul><li><b>연타·기만·강타·파멸이 4% 안쪽 동률</b> → 이미 쓰는 계열 유지해도 손해 거의 없음</li>
+            <li>몹이 <b>약하면</b>(한두 방) 기만이 1위, <b>단단하면</b> 연타가 1위</li>
+            <li>무리가 <b>12마리 이상</b>으로 몰리면 대상 10~12명인 <b>강타</b>가 1위(212), 6마리 정도면 연타·기만(129)</li>
+            <li>생존 칸을 빼면 파멸 186 · 강타 182 · 기만 180 · 연타 179</li></ul></div>
+        </div>
+        <span class="sublbl">상위 4덱 (몹 약함 / 보통 / 단단)</span>
+        <div class="bss"><div class="bs"><div class="bs-h"><span class="sty">연타</span><b>연타 · 폭주</b><span class="note">228 / 162 / 96</span><span class="v">162</span></div><div class="ord"><span class="sublbl">기본</span><span class='dc fix'>생명의 흐름</span><span class='arr'>·</span><span class='dc fix'>방패 밀기</span><span class='arr'>·</span><span class='dc'>난타</span><span class='arr'>·</span><span class='dc'>회전 난격</span><span class='arr'>·</span><span class='dc'>연쇄 타격</span><span class="sublbl">추가</span><span class='dc'>연속 충격</span><span class='arr'>·</span><span class='dc'>대검 찍기</span><span class='arr'>·</span><span class='dc'>크게 베기</span><span class="dc ultc">★ 폭주</span></div><p class="note">무리 6마리 129 · 12마리 201</p></div><div class="bs"><div class="bs-h"><span class="sty">기만</span><b>기만 · 회전하는 칼날</b><span class="note">247 / 140 / 94</span><span class="v">160</span></div><div class="ord"><span class="sublbl">기본</span><span class='dc fix'>생명의 흐름</span><span class='arr'>·</span><span class='dc fix'>방패 밀기</span><span class='arr'>·</span><span class='dc'>환상술</span><span class='arr'>·</span><span class='dc'>공간 결계</span><span class='arr'>·</span><span class='dc'>솟아오르는 창</span><span class="sublbl">추가</span><span class='dc'>연속 충격</span><span class='arr'>·</span><span class='dc'>크게 베기</span><span class='arr'>·</span><span class='dc'>검기 날리기</span><span class="dc ultc">★ 회전하는 칼날</span></div><p class="note">무리 6마리 129 · 12마리 197</p></div><div class="bs"><div class="bs-h"><span class="sty">강타</span><b>강타 · 천벌</b><span class="note">236 / 153 / 90</span><span class="v">160</span></div><div class="ord"><span class="sublbl">기본</span><span class='dc fix'>생명의 흐름</span><span class='arr'>·</span><span class='dc fix'>방패 밀기</span><span class='arr'>·</span><span class='dc'>연속 충격</span><span class='arr'>·</span><span class='dc'>대검 강타</span><span class='arr'>·</span><span class='dc'>크게 베기</span><span class="sublbl">추가</span><span class='dc'>휘둘러치기</span><span class='arr'>·</span><span class='dc'>회전 난격</span><span class='arr'>·</span><span class='dc'>돌풍 강격</span><span class="dc ultc">★ 천벌</span></div><p class="note">무리 6마리 123 · 12마리 212</p></div><div class="bs"><div class="bs-h"><span class="sty">파멸</span><b>파멸 · 대폭발</b><span class="note">238 / 141 / 89</span><span class="v">156</span></div><div class="ord"><span class="sublbl">기본</span><span class='dc fix'>생명의 흐름</span><span class='arr'>·</span><span class='dc fix'>방패 밀기</span><span class='arr'>·</span><span class='dc'>화염구</span><span class='arr'>·</span><span class='dc'>화염 분출</span><span class='arr'>·</span><span class='dc'>붕괴하는 대지</span><span class="sublbl">추가</span><span class='dc'>연속 충격</span><span class='arr'>·</span><span class='dc'>크게 베기</span><span class='arr'>·</span><span class='dc'>난타</span><span class="dc ultc">★ 대폭발</span></div><p class="note">무리 6마리 123 · 12마리 200</p></div></div>
+        <div class="twocol">
+          <div class="stack"><span class="sublbl">같은 조건으로 돌린 패치 후 유저 덱</span><div class="bars"><div class="br"><span class="lb">강타 565K (공4.2)</span><span class="tr"><i class="o" style="width:78%"></i></span><span class="vl">126</span></div><div class="br"><span class="lb">앤단덱2</span><span class="tr"><i class="o" style="width:73%"></i></span><span class="vl">119</span></div><div class="br"><span class="lb">상향 받은 올 파멸</span><span class="tr"><i class="o" style="width:72%"></i></span><span class="vl">117</span></div><div class="br"><span class="lb">파멸+강인</span><span class="tr"><i class="o" style="width:60%"></i></span><span class="vl">98</span></div><div class="br"><span class="lb">킹무덱 2.0 기만</span><span class="tr"><i class="o" style="width:51%"></i></span><span class="vl">83</span></div><div class="br"><span class="lb">무과금 혼합</span><span class="tr"><i class="o" style="width:51%"></i></span><span class="vl">83</span></div><div class="br"><span class="lb">유희3 기만</span><span class="tr"><i class="o" style="width:46%"></i></span><span class="vl">75</span></div></div></div>
+          <div class="stack"><span class="sublbl">⚠️ 이 계산이 못 보는 것</span>
+            <ul><li>범위 모양(전방·원형·원거리)과 이동·몰이. 무리 전원이 모든 도술 범위 안에 있다고 가정</li>
+            <li>그래서 유저 덱(하늘의 심판·요기 폭발 중심)이 25~100% 낮게 나와요. 원거리 광역은 실제로 더 잘 맞을 수 있어요</li>
+            <li>유저 실측 2건(혼합 490K 분당 79, 강타 565K 분당 60)과 마리 수가 맞지 않아 <b>절대 마리 수 아님, 상대 비교만</b></li>
+            <li>11/25 무료 초기화 전에 상위 덱 2~3개를 같은 사냥터에서 10분씩 재 보면 확정할 수 있어요</li></ul></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 신규 도술 -->
+    <section class="card" aria-labelledby="hc-h">
+      <div class="card-h"><h3 id="hc-h">🌀 신규 주술 '황천의 부름'</h3><span class="tag">특별 도술</span></div>
+      <div class="tw"><table>
+        <thead><tr><th></th><th class="num">0돌·0강</th><th class="num">6돌·50강</th></tr></thead>
+        <tbody>
+          <tr><td>재사용</td><td class="num">30초</td><td class="num">27.3초</td></tr>
+          <tr><td>신식개방 2타</td><td class="num">101.9% · 2명</td><td class="num">273.7% · 8명</td></tr>
+          <tr><td>지속 피해</td><td class="num">없음</td><td class="num">15초간 1초마다 96.6%</td></tr>
+          <tr><td>범위</td><td class="num">2×10m</td><td class="num">5×10m</td></tr>
+        </tbody>
+      </table></div>
+      <ul>
+        <li>적을 끌어오는 효과는 <b>신식개방이 발동했을 때만</b></li>
+        <li>6돌파: 1·2타 피해 +18%, 지속 피해 '황천의 늪' 추가</li>
+        <li>획득: 문파 개인 상점의 선택 상자, 금전 상점</li>
+      </ul>
+    </section>
+
+    <!-- 돌파·요령서 -->
+    <section class="card" aria-labelledby="gr-h">
+      <div class="card-h"><h3 id="gr-h">🎯 돌파 천장 · 요령서 통합</h3><span class="tag">장비 · 가호 · 도술</span></div>
+      <span class="sublbl">도술 돌파 천장 · 단계별로 실패가 이만큼 쌓이면 다음 돌파 100% 성공</span>
+      <div class="cols" role="img" aria-label="도술 돌파 천장 1~10단계: 1, 1, 1, 2, 3, 5, 14, 29, 29, 29회"><div class="col" tabindex="0" data-tip="1단계 · 실패 1회 쌓이면 다음 돌파 100% 성공"><span class="cv">1</span><i style="height:3.4%"></i><span class="cl">1</span></div><div class="col" tabindex="0" data-tip="2단계 · 실패 1회 쌓이면 다음 돌파 100% 성공"><span class="cv">1</span><i style="height:3.4%"></i><span class="cl">2</span></div><div class="col" tabindex="0" data-tip="3단계 · 실패 1회 쌓이면 다음 돌파 100% 성공"><span class="cv">1</span><i style="height:3.4%"></i><span class="cl">3</span></div><div class="col" tabindex="0" data-tip="4단계 · 실패 2회 쌓이면 다음 돌파 100% 성공"><span class="cv">2</span><i style="height:6.9%"></i><span class="cl">4</span></div><div class="col" tabindex="0" data-tip="5단계 · 실패 3회 쌓이면 다음 돌파 100% 성공"><span class="cv">3</span><i style="height:10.3%"></i><span class="cl">5</span></div><div class="col" tabindex="0" data-tip="6단계 · 실패 5회 쌓이면 다음 돌파 100% 성공"><span class="cv">5</span><i style="height:17.2%"></i><span class="cl">6</span></div><div class="col" tabindex="0" data-tip="7단계 · 실패 14회 쌓이면 다음 돌파 100% 성공"><span class="cv">14</span><i style="height:48.3%"></i><span class="cl">7</span></div><div class="col" tabindex="0" data-tip="8단계 · 실패 29회 쌓이면 다음 돌파 100% 성공"><span class="cv">29</span><i style="height:100.0%"></i><span class="cl">8</span></div><div class="col" tabindex="0" data-tip="9단계 · 실패 29회 쌓이면 다음 돌파 100% 성공"><span class="cv">29</span><i style="height:100.0%"></i><span class="cl">9</span></div><div class="col" tabindex="0" data-tip="10단계 · 실패 29회 쌓이면 다음 돌파 100% 성공"><span class="cv">29</span><i style="height:100.0%"></i><span class="cl">10</span></div></div>
+      <p class="note">7단계부터 천장이 급격히 높아져요(5 → 14 → 29회). 도술은 강화가 최대가 아니어도 돌파 가능. 장비·가호 천장은 돌파 화면에서 확인.</p>
+      <div class="flow" role="img" aria-label="스타일별 요령서가 통합 요령서 1종으로">
+        <div class="books"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <span class="arrow">→</span><div class="book1">1</div>
+        <span class="note">옛 요령서는 직접 변환 · 요령서가 든 상자는 열면 자동으로 통합본</span>
+      </div>
+<span class="sublbl">통합 요령서 살 수 있는 양 · 1주 기준으로 환산</span>
+      <div class="bars wlb" role="img" aria-label="주간 환산 구매 가능 수: 금전 상점 700, 단각 교환 210, 엽전 상점 30, 원격 상점 30"><div class="br"><span class="lb">금전 상점 <small class="u">일 100</small></span><span class="tr"><i style="width:100.0%"></i></span><span class="vl">700</span></div><div class="br"><span class="lb">단각 교환 <small class="u">일 30</small></span><span class="tr"><i style="width:30.0%"></i></span><span class="vl">210</span></div><div class="br"><span class="lb">엽전 상점 <span class="fix">정정</span> <small class="u">주 30</small></span><span class="tr"><i style="width:4.3%"></i></span><span class="vl">30</span></div><div class="br"><span class="lb">원격 상점 <small class="u">주 30</small></span><span class="tr"><i style="width:4.3%"></i></span><span class="vl">30</span></div></div>
+      <p class="note">일일 한도는 ×7로 환산했어요. 전부 사면 주 최대 970권.</p>
+    </section>
+
     <!-- 차원 점령전 -->
     <section class="card wide" aria-labelledby="cw-h">
-      <div class="card-h"><h3 id="cw-h">⚔️ 차원 점령전, 이렇게 바뀌어요</h3><span class="tag">18일부터 매주 화요일</span></div>
+      <div class="card-h"><h3 id="cw-h">⚔️ 차원 점령전, 이렇게 바뀌어요</h3><span class="tag">매주 화요일</span></div>
       <div class="tw">
-        <div class="axis" role="img" aria-label="예전에는 일요일 22시부터 23시 30분, 바뀐 뒤에는 화요일 21시 10분부터 약 22시 4분">
+        <div class="axis" role="img" aria-label="예전 일요일 22시~23시 30분, 이제 화요일 준비 21시 10분, 점령 21시 30분~22시 4분">
           <div class="lane"><div class="nm">예전<small>일요일</small></div>
             <div class="trk">
               <div class="seg old" style="left:37.5%;width:18.75%">예열</div>
@@ -266,212 +582,228 @@ footer a{color:var(--accent)}
       </div>
       <div class="twocol">
         <div class="stack">
-          <span class="sublbl">점령 점수 배율</span>
+          <span class="sublbl">서버 점수 배율</span>
           <div class="bars" role="img" aria-label="1차 100%, 2차 120%, 3차 150%">
             <div class="br"><span class="lb">1차 점령</span><span class="tr"><i style="width:66.7%"></i></span><span class="vl">100%</span></div>
             <div class="br"><span class="lb">2차 점령</span><span class="tr"><i style="width:80%"></i></span><span class="vl">120%</span></div>
             <div class="br"><span class="lb">3차 점령</span><span class="tr"><i style="width:100%"></i></span><span class="vl">150%</span></div>
           </div>
-          <p class="note">뒤로 갈수록 점수가 커서 막판 역전이 쉬워져요.</p>
-        </div>
-        <div class="stack">
           <span class="sublbl">부활 대기</span>
           <div class="vs"><span class="big o">20초</span><span class="arrow">→</span><span class="big n">10초</span></div>
+        </div>
+        <div class="stack">
           <ul>
-            <li>점령 10분 사이 쉬는 시간 2분은 PvP·사냥 불가</li>
-            <li>점령 시간이 끝날 때마다 모든 타일 초기화</li>
-            <li>보스 체력 조정 (기사에선 '상향')</li>
-            <li><b>화요일엔 낙화의 전장 보스전·보스 타임 이벤트 없음</b></li>
+            <li>준비·비점령 시간엔 사냥·PvP 불가</li>
+            <li>점령 기간마다 타일 소유권 초기화, 누적 점수는 유지</li>
+            <li>점령지 주둔 점수 상향, <b>보스 체력·처치 점수 상향</b></li>
+            <li>보스 출현 1분 전 안내 + 지도에 위치·남은 시간 표시</li>
+            <li>PvP 중 포탈 사용 불가, 전장에서 <b>M키</b>로 타일 지도</li>
+            <li>선택 입장에 <b>주간 횟수 제한</b> (버튼에 남은 횟수 표시)</li>
+            <li>선택 입장권 상시 판매 (금전 1,000, 주간 10회)</li>
+            <li><b>화요일엔 낙화의 전장 보스·보스 타임 이벤트 없음</b></li>
           </ul>
         </div>
       </div>
     </section>
 
-    <!-- 도술 -->
-    <section class="card wide" aria-labelledby="bal-h">
-      <div class="card-h"><h3 id="bal-h">🔄 도술 밸런스 한눈에</h3><span class="tag">세부 수치는 18일 공지</span></div>
-      <div class="legend"><span class="ld">하향</span><span class="lu">상향</span><span class="lc">방식 변경</span></div>
-      <div class="board">
-        <div class="st down"><span class="ar">▼</span><span class="n">강타</span><span class="x">초당 피해 하향</span></div>
-        <div class="st down"><span class="ar">▼</span><span class="n">척살</span><span class="x">PvE만 하향</span></div>
-        <div class="st chg"><span class="ar">↺</span><span class="n">천벌</span><span class="x">위치 지정 · 피해 하향</span></div>
-        <div class="st up"><span class="ar">▲</span><span class="n">파멸</span><span class="x">상향</span></div>
-        <div class="st up"><span class="ar">▲</span><span class="n">기동</span><span class="x">상향</span></div>
-        <div class="st up"><span class="ar">▲</span><span class="n">주술</span><span class="x">상향 · 신규 도술</span></div>
-        <div class="st up"><span class="ar">▲</span><span class="n">기만</span><span class="x">상향</span></div>
-        <div class="st up"><span class="ar">▲</span><span class="n">연타</span><span class="x">보스 피해 효과</span></div>
-        <div class="st up"><span class="ar">▲</span><span class="n">절명</span><span class="x">암습 상향</span></div>
+    <!-- 깊은 곳 -->
+    <section class="card wide" aria-labelledby="hunt-h">
+      <div class="card-h"><h3 id="hunt-h">🗺️ '깊은 곳' 6개 구역</h3><span class="tag">권장 전투력 · 채널 인원</span></div>
+      <div class="mycp"><label for="mycp">내 전투력</label><input id="mycp" type="number" inputmode="numeric" placeholder="예: 380000" min="0" step="1000"><span id="mycpo" class="note">입력하면 갈 수 있는 구역이 표시돼요 (이 기기에만 저장)</span></div>
+      <div class="tw">
+        <div class="deep" role="img" aria-label="깊은 곳 권장 전투력: 황무지 마을 15만, 우물 동굴 21.5만, 음산한 폐광 29만, 독기 지대 33.5만, 마을 어귀 53만, 동구밖 73.5만">
+          <div class="dp h"><span>구역</span><span>권장 전투력 (최대 73.5만)</span><span class="num">전투력</span><span class="num">채널 인원</span></div>
+          <div class="dp" tabindex="0" data-cp="150000" data-tip="황무지 마을 깊은 곳 · 권장 15만 · 채널 6명"><span>황무지 마을 깊은 곳</span><span class="tr"><i style="width:20.4%"></i><b class="mk" hidden></b></span><span class="num">15만</span><span class="num">6명</span></div>
+          <div class="dp" tabindex="0" data-cp="215000" data-tip="우물 동굴 깊은 곳 · 권장 21.5만 · 채널 3명"><span>우물 동굴 깊은 곳</span><span class="tr"><i style="width:29.3%"></i><b class="mk" hidden></b></span><span class="num">21.5만</span><span class="num">3명</span></div>
+          <div class="dp" tabindex="0" data-cp="290000" data-tip="음산한 폐광 깊은 곳 · 권장 29만 · 채널 6명"><span>음산한 폐광 깊은 곳</span><span class="tr"><i style="width:39.5%"></i><b class="mk" hidden></b></span><span class="num">29만</span><span class="num">6명</span></div>
+          <div class="dp" tabindex="0" data-cp="335000" data-tip="독기 지대 깊은 곳 · 권장 33.5만 · 채널 12명"><span>독기 지대 깊은 곳</span><span class="tr"><i style="width:45.6%"></i><b class="mk" hidden></b></span><span class="num">33.5만</span><span class="num">12명</span></div>
+          <div class="dp" tabindex="0" data-cp="530000" data-tip="마을 어귀 깊은 곳 · 권장 53만 · 채널 9명"><span>마을 어귀 깊은 곳</span><span class="tr"><i style="width:72.1%"></i><b class="mk" hidden></b></span><span class="num">53만</span><span class="num">9명</span></div>
+          <div class="dp" tabindex="0" data-cp="735000" data-tip="동구밖 깊은 곳 · 권장 73.5만 · 채널 10명"><span>동구밖 깊은 곳</span><span class="tr"><i style="width:100%"></i><b class="mk" hidden></b></span><span class="num">73.5만</span><span class="num">10명</span></div>
+        </div>
       </div>
       <div class="twocol">
-        <ul>
-          <li><b>천벌</b>: 차지 없이 항상 풀차지, 원하는 위치에 사용(자동 사냥 땐 타겟 위치). 대신 피해량은 낮아짐</li>
-          <li><b>연타</b>: 신식 개방 시 때릴수록 보스 피해 증가 <span class="tbc">확인 중</span></li>
-          <li>일섬·암습 빼고 공격 대상 수 상향</li>
-          <li><b>황천의 부름</b>(주술 신규): 주술 신식 개방 시 적을 끌어오고 바닥 지속 피해, 미개방이면 바닥 피해만</li>
-        </ul>
         <div class="stack">
-          <span class="sublbl">앞으로의 조정 주기 (매월)</span>
-          <div class="cal">
-            <div class="wk"><b>1주</b>유지</div>
-            <div class="wk"><b>2주</b>유지</div>
-            <div class="wk on"><b>3주</b>정기 조정</div>
-            <div class="wk on"><b>4주</b>정기 조정</div>
-          </div>
-          <p class="note">조정하는 주엔 초기화·돌파 교체가 무료예요. 강타처럼 문제가 큰 도술은 임시 점검으로 바로 고친대요.</p>
+          <span class="sublbl">깊은 곳 일일·주간 요귀 처치 임무</span>
+          <div class="tw"><table>
+            <thead><tr><th>구역</th><th class="num">일일 (100마리)</th><th class="num">주간 (400마리)</th></tr></thead>
+            <tbody>
+              <tr><td>황무지 마을</td><td class="num">엽전 2만</td><td class="num">엽전 6만</td></tr>
+              <tr><td>우물 동굴</td><td class="num">엽전 2.4만</td><td class="num">엽전 7.2만</td></tr>
+              <tr><td>음산한 폐광</td><td class="num">엽전 2.8만</td><td class="num">엽전 8.4만</td></tr>
+              <tr><td>독기 지대</td><td class="num">엽전 3.4만</td><td class="num">엽전 10.2만</td></tr>
+              <tr><td>마을 어귀</td><td class="num">금전 300</td><td class="num">금전 900</td></tr>
+              <tr><td>동구밖</td><td class="num">금전 525</td><td class="num">금전 1,575</td></tr>
+            </tbody>
+          </table></div>
+          <p class="note">주간 임무를 깨면 <b>영웅 재조율권 선택 상자 2개</b>도 같이 받아요.</p>
+        </div>
+        <div class="stack">
+          <ul>
+            <li>지도는 그대로, 경계를 넘으면 지역명과 요귀가 바뀌어요 (기존 구역 = 하위, 깊은 곳 = 상위 요귀)</li>
+            <li>월드맵·추천 사냥터·순간이동으로 바로 이동 가능</li>
+            <li>보물 상자 10개 위치 변경, 이미 찾은 기록은 유지</li>
+            <li>요귀 도감에도 깊은 곳 추가 (상위 요귀 65종 이동, 기존 기록 유지)</li>
+            <li><b>제자리 사냥 삭제</b> (5m 인식 범위는 유지)</li>
+            <li><b>상위 사냥터 보상 감소</b>는 이제 <b>순 전투력</b> 기준 (하위 사냥터는 기존처럼 공격력 환산)</li>
+            <li><b>비경 입장 전투력 제한</b>: 기준보다 낮으면 입장 불가, 비경 안 목책·중앙 상점 NPC 제거</li>
+            <li>역병의 부화장 금전 보상 오류 수정: 일일 150 → 180, 주간 450 → 540</li>
+          </ul>
         </div>
       </div>
     </section>
 
-    <!-- 돌파 천장 -->
-    <section class="card" aria-labelledby="gr-h">
-      <div class="card-h"><h3 id="gr-h">🎯 돌파 천장</h3><span class="tag">장비 · 가호 · 도술</span></div>
-      <div class="stack">
-        <span class="sublbl">예시: 도술 5→6돌 천장 5회 (방송 시연 화면)</span>
-        <div class="pips" role="img" aria-label="실패 5번이 쌓이면 다음 시도는 100% 성공">
-          <span class="pip f">✕</span><span class="pip f">✕</span><span class="pip f">✕</span><span class="pip f">✕</span><span class="pip f">✕</span><span class="arrow">→</span><span class="pip s">100% 성공</span>
-        </div>
-        <p class="note">6→7돌은 14회로 보였어요. 정확한 횟수는 공지 예정 <span class="tbc">확인 중</span></p>
-      </div>
-      <ul>
-        <li><b>환급</b>: 기댓값보다 더 쓴 재료 + 마지막에 실패한 단계 재료 전액, 점검 후 우편</li>
-        <li><b>강화·돌파 분리</b>: 50강이 아니어도 돌파 가능</li>
-      </ul>
-    </section>
-
-    <!-- 요령서 -->
-    <section class="card" aria-labelledby="bk-h">
-      <div class="card-h"><h3 id="bk-h">📘 도술 요령서 통합</h3><span class="tag">12종 → 1종</span></div>
-      <div class="flow" role="img" aria-label="요령서 12종이 통합 요령서 1종으로">
-        <div class="books"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-        <span class="arrow">→</span>
-        <div class="book1">1</div>
-        <span class="note">가방에 있던 요령서는 <b>자동으로 안 바뀌어요</b><br>제작 › 재료 › 도술 강화 재료에서 변환</span>
-      </div>
-      <div class="bars" role="img" aria-label="통합 요령서 구매 횟수">
-        <div class="br"><span class="lb">복분이 상점</span><span class="tr"><i style="width:30%"></i></span><span class="vl">주 30</span></div>
-        <div class="br"><span class="lb">원격 상점</span><span class="tr"><i style="width:30%"></i></span><span class="vl">30</span></div>
-        <div class="br"><span class="lb">단각 상점</span><span class="tr"><i style="width:30%"></i></span><span class="vl">일 30</span></div>
-        <div class="br"><span class="lb">금전 상점</span><span class="tr"><i style="width:100%"></i></span><span class="vl">일 100</span></div>
-      </div>
-      <p class="note">막대는 한 번에 살 수 있는 횟수예요. 원격 상점 주기와 단각 상점 '1일'은 <span class="tbc">확인 중</span></p>
-    </section>
-
-    <!-- 사냥터 -->
-    <section class="card wide" aria-labelledby="hunt-h">
-      <div class="card-h"><h3 id="hunt-h">🗺️ 사냥터가 '깊은 곳'으로 나뉘어요</h3><span class="tag">제자리 사냥은 삭제</span></div>
-      <div class="split" role="img" aria-label="황무지 마을 한 곳에 섞여 있던 13만 5천, 15만 몬스터가 두 필드로 나뉨">
-        <div class="fld"><span class="tt">지금 · 황무지 마을</span>
-          <div class="mon"><i class="a"></i><i class="b"></i><i class="a"></i><i class="b"></i><i class="a"></i><i class="b"></i><i class="a"></i><i class="b"></i></div>
-          <span class="note">13만 5천·15만 몬스터가 한 필드에 섞여 있음</span></div>
-        <span class="arrow">→</span>
-        <div class="zone">
-          <div class="za"><b>황무지 마을</b><span>13만 5천 몬스터만</span><span>보물 상자 2~3개 이동해 옴</span></div>
-          <div class="zb"><b>황무지 마을 깊은 곳</b><span>15만 몬스터만</span><span>전용 일일·주간 임무</span></div>
-        </div>
-      </div>
-      <div class="stack">
-        <span class="sublbl">나뉘는 6개 지역 (황무지 마을 ~ 동구밖) <span class="tbc">확인 중</span></span>
-        <div class="chain"><span>황무지 마을</span><em>→</em><span>우물 동굴</span><em>→</em><span>음산한 폐광</span><em>→</em><span>독기 지대</span><em>→</em><span>마을 어귀</span><em>→</em><span>동구밖</span></div>
-        <p class="note">방송에선 '황무지 마을부터 동구밖까지 6개'라고만 했어요. 위 목록은 11/11에 채널 인원이 조정된 6곳이라 같은 곳일 가능성이 높아요. 이미 찾은 보물 상자 기록은 그대로고, 스팟별 몬스터 밀도도 똑같이 맞췄대요.</p>
-      </div>
-    </section>
-
-    <!-- 레이드 -->
+    <!-- 콘텐츠 -->
     <section class="card" aria-labelledby="raid-h">
-      <div class="card-h"><h3 id="raid-h">🐉 레이드 · 하드 모드</h3><span class="tag">18일 추가</span></div>
+      <div class="card-h"><h3 id="raid-h">🐉 불가살이 · 심마의 시련</h3><span class="tag">보스토벌 메뉴</span></div>
       <ul>
-        <li><b>불가살이 레이드</b>: 백운 대신, 1~5단계. 백운 화첩은 그대로, 의복 대신 '박하색 안경'</li>
-        <li><b>심마의 시련</b>: 화미공 하드 모드, 1~6단계, 도전 비용 엽전 5만(무제한), 1~3위 기간제 칭호</li>
+        <li><b>불가살이 레이드</b>: 백운 대체. 5단계 모든 등급의 백운 깃털 모자·옷 → '박하색 안경'(거래 가능 상자), 4단계 S등급에도 추가</li>
+        <li>레이드 클리어·등급 판정이 보스 체력 0 시점으로 (처치 후 3초 대기 시간 제외)</li>
+        <li><b>심마의 시련</b>: 1인 보스 도전, <b>레벨 50</b>부터. 입장 시 엽전 소모(성공·실패 무관), 횟수 제한 없음</li>
+        <li>점수는 누적 점수 + 시련 순위(1회 최고 점수) 두 가지, 랭킹은 <b>서버 그룹 단위</b></li>
+        <li>시즌은 서버 셔플 주기에 맞춰 <b>2주</b>, 종료 30분 전부터 새 입장 불가</li>
       </ul>
       <div class="stack">
-        <span class="sublbl">레이드 단계 재편 (예정, 일정 미정) · 입장 전투력</span>
-        <div class="stairs" role="img" aria-label="3단계 15만, 4단계 24만, 새 5단계 42만, 6단계 60만, 새 7단계 100만">
-          <div class="sr"><span class="lv">3단계</span><span class="tr"><i style="width:15%"></i></span><span class="vl">15만</span></div>
+        <span class="sublbl">레이드 단계 재편 (라이브 발표, 이번 패치엔 없음)</span>
+        <div class="stairs" role="img" aria-label="예정: 4단계 24만, 새 5단계 42만, 6단계 60만, 새 7단계 100만">
           <div class="sr"><span class="lv">4단계</span><span class="tr"><i style="width:24%"></i></span><span class="vl">24만</span></div>
           <div class="sr new"><span class="lv">5단계</span><span class="tr"><i style="width:42%"></i></span><span class="vl">42만 신설</span></div>
           <div class="sr"><span class="lv">6단계</span><span class="tr"><i style="width:60%"></i></span><span class="vl">60만</span></div>
           <div class="sr new"><span class="lv">7단계</span><span class="tr"><i style="width:100%"></i></span><span class="vl">100만 신설</span></div>
         </div>
-        <p class="note">지금의 5단계(60만)가 6단계로 밀려요. 3단계 15만은 10/20 라이브 기준.</p>
       </div>
     </section>
 
     <!-- 문파 -->
     <section class="card" aria-labelledby="guild-h">
-      <div class="card-h"><h3 id="guild-h">🏯 문파 보상이 바뀌어요</h3><span class="tag">18일부터</span></div>
-      <div class="gflow" role="img" aria-label="문파 콘텐츠 보상이 문파 몫 용맹의 증표는 줄고, 개인 몫 무용의 증표가 생겨 문파 개인 상점에서 사용">
+      <div class="card-h"><h3 id="guild-h">🏯 문파 변경</h3><span class="tag">오늘부터</span></div>
+      <div class="gflow" role="img" aria-label="문파 콘텐츠 보상: 용맹의 증표 감소, 개인 보상 무용의 증표 신설, 문파 개인 상점에서 교환">
         <div class="node"><b>문파 콘텐츠</b>참여</div>
         <span class="arrow">→</span>
         <div class="stack">
-          <div class="node d"><b>용맹의 증표 ↓</b>문파 몫, 크게 감소</div>
-          <div class="node n"><b>무용의 증표 NEW</b>내 몫, 개인 지급</div>
+          <div class="node d"><b>용맹의 증표 ↓</b>문파 몫 감소</div>
+          <div class="node n"><b>무용의 증표 NEW</b>개인 참여 보상</div>
         </div>
         <span class="arrow">→</span>
-        <div class="node n"><b>문파 개인 상점</b>문파 상점 아래</div>
+        <div class="node n"><b>문파 개인 상점</b>문파 화면 오른쪽 아래</div>
+      </div>
+      <div class="stack">
+        <span class="sublbl">문주 교체 <span class="fix">정정</span> 자동 위임이 아니라 버튼 방식</span>
+        <div class="steps">
+          <span><b>문주 3일 미접속</b>부문주에게 버튼</span><span class="arrow">→</span>
+          <span><b>부문주도 3일 안 누르면</b>일반 문파원에게 버튼</span><span class="arrow">→</span>
+          <span><b>위임 순서</b>부문주 → 일반, 같으면 가입 빠른 순</span>
+        </div>
       </div>
       <ul>
-        <li><b>참여 기록</b>: 문파 › 활동 › 참여 기록</li>
-        <li><b>주의 목록</b>: 메뉴 '교류'에서 등록, 예전 닉네임도 표시, 주의 대상이 문주인 문파 가입 시 경고</li>
-        <li><b>문주 자동 위임</b>: 문주가 오래 미접속이면 부문주 → 지위·전투력 순</li>
+        <li><b>참여 기록</b>(문파 › 활동): 오늘 이후 문파 전투 정산부터 보여요</li>
+        <li><b>주의 목록</b>(교류): 이름·현재 이름·등록 사유, 주의 대상이 문주인 문파 가입 시 경고</li>
+        <li><b>문파 휴면</b>: 전원 장기 미접속 시 휴면, 즉시 가입이 가입 신청으로 바뀜</li>
+        <li>문파 공지 50자 → <b>100자</b>, 문파 일지에 미혹의 정원 순위 기록</li>
+        <li>신기 쟁탈전·미혹의 정원 참여 임무: <b>입장만 해도 완료</b> (끝까지 안 있어도 됨)</li>
+      </ul>
+    </section>
+
+    <!-- 서버 그룹 -->
+    <section class="card" aria-labelledby="srv-h">
+      <div class="card-h"><h3 id="srv-h">🌐 새 서버 그룹 매칭</h3><span class="tag">11/18 05:00부터</span></div>
+      <div class="tw"><table>
+        <thead><tr><th>그룹</th><th>매칭되는 서버</th></tr></thead>
+        <tbody>
+          <tr class="mine"><td class="num">6</td><td>아산 1 · <b>공월아 1</b> · 강이태 3</td></tr>
+          <tr><td class="num">1</td><td>괴량 1 · 해월 2 · 해월 3</td></tr>
+          <tr><td class="num">13</td><td>백운 2 · 공월아 3 · 유희 2</td></tr>
+          <tr><td class="num">15</td><td>공월아 2 · 복분 3 · 복분 2</td></tr>
+        </tbody>
+      </table></div>
+      <p class="note">우리 서버(공월아 1)는 6그룹이에요. 전체 15그룹 목록은 공식 업데이트 안내에 있어요. 심마의 시련 랭킹도 서버 그룹 단위로 집계돼요.</p>
+    </section>
+
+    <!-- 낙화 이벤트 -->
+    <section class="card" aria-labelledby="nak-h">
+      <div class="card-h"><h3 id="nak-h">🌸 낙화의 전장 보스 타임</h3><span class="tag">화요일 제외</span></div>
+<div class="dbs" role="img" aria-label="보스 타임 진행 40분에서 60분, 재출현 10분에서 5분"><div class="db" tabindex="0" data-tip="진행 시간 40분 → 60분"><span class="lb">진행 시간</span><span class="dt"><i class="ln" style="left:66.7%;width:33.3%"></i><i class="o" style="left:66.7%"></i><i class="n" style="left:100.0%"></i></span><span class="vl"><s>40</s> → <b>60분</b></span></div><div class="db" tabindex="0" data-tip="재출현 간격 10분 → 5분"><span class="lb">재출현 간격</span><span class="dt"><i class="ln" style="left:8.3%;width:8.3%"></i><i class="o" style="left:16.7%"></i><i class="n" style="left:8.3%"></i></span><span class="vl"><s>10</s> → <b>5분</b></span></div><div class="dblg"><span class="o">예전</span><span class="n">이제</span></div></div>
+      <ul>
+        <li>21:10 ~ 22:10, 이벤트 요귀 생명력 크게 감소</li>
+        <li>처치 시 <b>거래 불가 요혼석 3개</b>, 1인당 <b>주간 최대 300개</b></li>
+        <li>이벤트 요귀는 <b>1채널에만</b> 등장</li>
+        <li>낙화의 전장에 주간 획득 아이템·'전리품' 항목 추가</li>
+      </ul>
+    </section>
+
+    <!-- 편의 -->
+    <section class="card" aria-labelledby="qol-h">
+      <div class="card-h"><h3 id="qol-h">🧰 편해지는 것</h3><span class="tag">오늘부터</span></div>
+      <ul>
+        <li><b>환전소 즉시 이용</b>: 가방 왼쪽 위 창고 버튼 아래, 멤버십 없어도 됨</li>
+        <li><b>거래소</b>: 일괄 판매·일괄 구매 한 목록, 매물 없으면 <b>구매 예약</b> (중첩 아이템만). 등록 후 노출 대기 3~5분 → 2~7분</li>
+        <li><b>재조율 화면</b>: 기존 옵션과 바뀔 옵션 비교가 쉬워짐</li>
+        <li>단 봉인 해제 한 번에 100 → <b>1,000개</b></li>
+        <li>세계지도에 <b>요귀 밀집 구역</b> 표시 (황무지 마을 이상)</li>
+        <li><b>화첩 조각 일괄 등록</b>, 분해 시 거래 가능 아이템 제외 필터</li>
+        <li>내 정보 능력치·전투력 반영 오류 수정</li>
+        <li><b>천요석</b> 주간 제작 300 → <b>100개</b></li>
       </ul>
     </section>
 
     <!-- 보상 -->
     <section class="card wide" aria-labelledby="rw-h">
-      <div class="card-h"><h3 id="rw-h">🎁 18일 점검 후 받는 것</h3><span class="tag">우편함</span></div>
+      <div class="card-h"><h3 id="rw-h">🎁 오늘 받는 것</h3><span class="tag">우편함</span></div>
       <div class="rew">
-        <div class="rw"><span class="ic" aria-hidden="true">⚔️</span><span class="q">각 1</span><span class="nm">전설·영웅<br>무기 변경권</span></div>
-        <div class="rw"><span class="ic" aria-hidden="true">🎲</span><span class="q">10</span><span class="nm">재조율권<br><span class="tbc">확인 중</span></span></div>
-        <div class="rw"><span class="ic" aria-hidden="true">🍀</span><span class="q">20</span><span class="nm">행운 상자</span></div>
-        <div class="rw hot"><span class="ic" aria-hidden="true">📦</span><span class="q">5</span><span class="nm">도술 조각<br>선택 상자 (추가)</span></div>
-        <div class="rw"><span class="ic" aria-hidden="true">↩️</span><span class="q">환급</span><span class="nm">돌파 기댓값<br>초과분</span></div>
+        <div class="rw"><span class="ic" aria-hidden="true">✨</span><span class="q">50</span><span class="nm">신기 가루<br>(GM의 선물 상자 3)</span></div>
+        <div class="rw"><span class="ic" aria-hidden="true">🪙</span><span class="q">10만</span><span class="nm">엽전<br>(GM의 선물 상자 3)</span></div>
+        <div class="rw"><span class="ic" aria-hidden="true">📜</span><span class="q">10</span><span class="nm">전투 공격 비법서<br>(20분 공격력 +50)</span></div>
       </div>
-      <p class="note">도술 조각 선택 상자 5개는 방송 끝에 추가로 정해졌어요. 초기화 무료 주간에 안 써 본 도술을 시험해 보라는 취지예요. 18일 패키지엔 요혼석이 없어요.</p>
-    </section>
-
-    <!-- 낙화 이벤트 -->
-    <section class="card" aria-labelledby="nak-h">
-      <div class="card-h"><h3 id="nak-h">🌸 낙화의 전장 이벤트</h3><span class="tag">18일부터</span></div>
-      <div class="bars" role="img" aria-label="진행 시간 40분에서 60분, 재생성 10분에서 5분, 처치 보상 5개에서 3개">
-        <div class="br"><span class="lb">진행 시간</span><span class="tr"><i class="o" style="width:66.7%"></i></span><span class="vl">40분</span></div>
-        <div class="br"><span class="lb"></span><span class="tr"><i style="width:100%"></i></span><span class="vl">60분</span></div>
-        <div class="br"><span class="lb">재생성</span><span class="tr"><i class="o" style="width:100%"></i></span><span class="vl">10분</span></div>
-        <div class="br"><span class="lb"></span><span class="tr"><i style="width:50%"></i></span><span class="vl">5분</span></div>
-        <div class="br"><span class="lb">처치 보상</span><span class="tr"><i class="o" style="width:100%"></i></span><span class="vl">5개</span></div>
-        <div class="br"><span class="lb"></span><span class="tr"><i style="width:60%"></i></span><span class="vl">3개</span></div>
-      </div>
-      <p class="note">회색 = 지금, 초록 = 18일부터. 21:10~22:10, 몬스터 체력을 크게 낮춰 먼저 찾은 사람이 바로 보상. 개인 주간 300개 한도 <span class="tbc">확인 중</span></p>
-    </section>
-
-    <!-- 편의 -->
-    <section class="card" aria-labelledby="qol-h">
-      <div class="card-h"><h3 id="qol-h">🧰 편해지는 것</h3><span class="tag">18일부터</span></div>
       <ul>
-        <li><b>원격 환전소</b>: 가방 › 원격 상점·창고 아래, 멤버십 없어도 사용</li>
-        <li><b>거래소 예약 구매</b>: 가격·수량 걸어 두면 그 이하 매물에 자동 체결 (겹쳐지는 아이템만)</li>
-        <li><b>재조율 화면</b>: 옵션 등급, 내 최고 옵션 대비 비교 표시</li>
-        <li>정기단 봉인 해제 한 번에 <b>1,000개</b></li>
-        <li>세계지도에 몬스터 <b>스팟 위치</b> 표시 (끌 수 있음)</li>
-        <li>성장 창 렉, 공격력 표시 오류, 레드닷 문제 수정</li>
-        <li>성별·캐릭터명 변경권, 신규 의복 2종(허수아비·수묵화), 신규 탈것 2종, 미용실 꾸미기 추가</li>
+        <li><b>GM의 선물 상자 3</b>: 오늘 11:00~23:59 사이 접속하면 지급</li>
+        <li><b>돌파 재료 환급</b>: 기댓값 초과분 + 지금 실패 중인 단계에 쓴 재료 전액</li>
+        <li>라이브에서 말한 <b>무기 변경권·재조율권·행운 상자·도술 조각 선택 상자 5개</b>는 공지에 아직 없어요 <span class="tbc">미확인</span></li>
       </ul>
+    </section>
+
+    <!-- 이벤트·상품 -->
+    <section class="card wide" aria-labelledby="ev-h">
+      <div class="card-h"><h3 id="ev-h">🎲 이벤트 · 새 상품</h3><span class="tag">12/2 정기 점검 전까지</span></div>
+      <div class="twocol">
+        <div class="stack">
+          <span class="sublbl">이벤트</span>
+          <ul>
+            <li><b>뚝딱! 도깨비 빙고 준비 대작전</b>: 7일차까지 매일 미션(접속·요귀 처치·일일 임무 등) → 도깨비 와편</li>
+            <li><b>뚝딱! 도깨비 빙고</b>: 10라운드, 요혼석·도술 강화 요령서·영웅/전설 재조율권 선택 상자·가호 주머니 등</li>
+            <li><b>출정 보스 토벌대</b>: 누적 포인트 3·6·9 → 요혼석 10·20, 낡은 무투가 의복</li>
+          </ul>
+        </div>
+        <div class="stack">
+          <span class="sublbl">영석 상점</span>
+          <div class="tw"><table>
+            <thead><tr><th>상품</th><th class="num">영석</th><th>비고</th></tr></thead>
+            <tbody>
+              <tr><td>허수아비 의복 세트</td><td class="num">1,600</td><td>도사당 5회, 12/2 전</td></tr>
+              <tr><td>수묵화 의복 세트</td><td class="num">1,600</td><td>허수아비 5회 구매 후, 거래 불가</td></tr>
+              <tr><td>복덩이를 물어온 학</td><td class="num">1,600</td><td>탈것, 12/2 전</td></tr>
+              <tr><td>수등귀</td><td class="num">1,600</td><td>탈것, 합성 획득 가능</td></tr>
+              <tr><td>성별·이름 변경권</td><td class="num">각 720</td><td>상시</td></tr>
+              <tr><td>비경 충전·도술 성장 지원 상자</td><td class="num">각 400</td><td>도사당 8회, 11/25 전</td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </div>
     </section>
 
     <!-- 로드맵 -->
     <section class="card wide" aria-labelledby="road-h">
-      <div class="card-h"><h3 id="road-h">📅 앞으로 예정</h3><span class="tag">방송 Q&A 기준</span></div>
+      <div class="card-h"><h3 id="road-h">📅 앞으로 예정</h3><span class="tag">어제 라이브 Q&A 기준</span></div>
       <div class="road">
-        <div class="rd now"><span class="when">11/18</span><ul><li>위 업데이트 전부</li><li>제자리 사냥 삭제</li><li>도술 무료 초기화 시작</li></ul></div>
+        <div class="rd now"><span class="when">~11/25</span><ul><li>도술 강화 초기화·돌파 교체 무료</li><li>지원 상자 판매</li></ul></div>
         <div class="rd"><span class="when">다다음 주쯤</span><ul><li>수호자 → 산군 전환 (도안 + 변경권)</li><li>수호자 → 낙화 장비 변경 검토</li></ul></div>
-        <div class="rd"><span class="when">12월</span><ul><li>곤장대 · 겨울 테마</li><li>중순쯤 연단술</li></ul></div>
-        <div class="rd"><span class="when">일정 미정</span><ul><li>레이드 42만·100만 단계</li><li>문파 아지트 (결계지·요신 점수 매주 초기화)</li><li>신서버, 도술 프리셋 확장, 미니게임</li></ul></div>
+        <div class="rd"><span class="when">12월</span><ul><li>12/2까지 빙고·의복·학 탈것</li><li>곤장대 · 겨울 테마 · 중순쯤 연단술</li></ul></div>
+        <div class="rd"><span class="when">일정 미정</span><ul><li>레이드 42만·100만 단계</li><li>문파 아지트</li><li>신서버, 도술 프리셋 확장</li></ul></div>
       </div>
     </section>
   </div>
 
   <footer>
-    <p>근거: 공식 유튜브 「도깨비의세계 LIVE 👾 [26.11.17]」 자동 자막, 공식 「11월 18일(수) 업데이트 관련 사전 안내」, 게임뷰 11/17 기사. 자동 자막 기준이라 일부 숫자는 18일 공식 공지와 다를 수 있어요. 그림의 막대 길이는 방송에서 나온 숫자 비율 그대로예요.</p>
-    <p><a href="https://www.youtube.com/watch?v=xNZIc8Hr3TY">라이브 다시보기</a> · <a href="https://forum.kakaogames.com/dokkaebi/postView/?code=notice&id=1216066">공식 사전 안내</a> · <a href="https://www.gamevu.co.kr/news/articleView.html?idxno=62401">게임뷰 기사</a></p>
+    <p>근거: 공식 「11월 18일(수) 업데이트 안내」, 「11월 18일(수) 정기 점검 완료 및 보상 지급 안내」(11/18 11:30 확인), 11/17 라이브 방송. 앞으로 예정은 라이브 발언이라 바뀔 수 있어요. 그림의 막대 길이는 공지 숫자 비율 그대로예요.</p>
+    <p><a href="https://forum.kakaogames.com/dokkaebi/postView/?code=update&id=1220255">공식 업데이트 안내</a> · <a href="https://forum.kakaogames.com/dokkaebi/postView/?code=notice&id=1220266">점검 완료·보상 안내</a> · <a href="https://www.youtube.com/watch?v=xNZIc8Hr3TY">11/17 라이브 다시보기</a></p>
   </footer>
 </div>
 
@@ -486,6 +818,114 @@ footer a{color:var(--accent)}
     cb.addEventListener('change',function(){ try{ localStorage.setItem(key, cb.checked?'1':'0'); }catch(e){} upd(); });
   });
   upd();
+})();
+
+document.querySelectorAll('.dtabs button').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.dtabs button').forEach(x=>{x.setAttribute('aria-selected',x===b);document.getElementById(x.dataset.p).hidden=x!==b});
+}));
+
+(function(){
+  var raw=JSON.parse(document.getElementById('tdata').textContent);
+  var svg=d3.select('#tsvg'), wrap=document.getElementById('tsvgw'), info=document.getElementById('tinfo');
+  var filt='all', deckSet=null, selName=null;
+  var root=d3.hierarchy(raw.tree,function(d){return d.c;});
+  root.descendants().forEach(function(d){ if(d.depth===2){ d._children=d.children; d.children=null; } });
+  var sel=document.getElementById('tdeck');
+  Object.keys(raw.decks).forEach(function(k){ var o=document.createElement('option'); o.value=k; o.textContent=k; sel.appendChild(o); });
+  function cls(d){ var x=d.data, c=['nd',x.k];
+    if(x.k==='style' && !d.children) c.push('closed');
+    if(x.k==='skill'){ if(x.up) c.push('up'); if(x.dn) c.push('dn'); if(x.tg) c.push('tg'); if(x.u) c.push('ult');
+      var ok= filt==='all' || (filt==='up'&&x.up) || (filt==='dn'&&x.dn) || (filt==='tg'&&x.tg) || (filt==='hot'&&x.hot>=3);
+      if(deckSet) ok = ok && deckSet.has(x.n);
+      if(!ok) c.push('dim'); if(deckSet&&deckSet.has(x.n)) c.push('deck'); if(x.n===selName) c.push('sel'); }
+    return c.join(' ');
+  }
+  function styleMark(d){ var cs=d.data.c||[]; var up=0,dn=0,hit=0; cs.forEach(function(s){ if(s.up||s.tg) up++; if(s.dn) dn++; if(deckSet&&deckSet.has(s.n)) hit++; });
+    return {up:up,dn:dn,hit:hit,n:cs.length}; }
+  function draw(){
+    var dx=24, dy=(wrap.clientWidth<600?118:150);
+    var t=d3.tree().nodeSize([dx,dy]); t(root);
+    var x0=Infinity,x1=-Infinity; root.each(function(d){ if(d.x<x0)x0=d.x; if(d.x>x1)x1=d.x; });
+    var W=dy*3+400, H=x1-x0+dx*2;
+    svg.attr('width',W).attr('height',H).attr('viewBox',[-120,x0-dx,W,H]);
+    var g=svg.selectAll('g.root-g').data([0]).join('g').attr('class','root-g');
+    var links=root.links();
+    g.selectAll('path.lk').data(links,function(d){return d.target.data.n+d.target.depth;}).join('path')
+      .attr('class',function(d){ return 'lk'+(deckSet&&d.target.data.k==='skill'&&deckSet.has(d.target.data.n)?' on':''); })
+      .attr('d',d3.linkHorizontal().x(function(d){return d.y;}).y(function(d){return d.x;}));
+    var nodes=g.selectAll('g.nd').data(root.descendants(),function(d){return d.data.n+d.depth;}).join(function(en){
+      var e=en.append('g'); e.append('circle').attr('r',5.5); e.append('text').attr('class','lb'); e.append('text').attr('class','bd'); return e; });
+    nodes.attr('class',cls).attr('transform',function(d){return 'translate('+d.y+','+d.x+')';})
+      .attr('tabindex',0).attr('role','button')
+      .on('click',function(ev,d){ act(d); }).on('keydown',function(ev,d){ if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();act(d);} });
+    nodes.select('circle').attr('r',function(d){return d.depth<2?6.5:5.5;});
+    nodes.select('text.lb').attr('dy','0.32em').attr('x',function(d){return d.depth<3&&d.children?-10:10;})
+      .attr('text-anchor',function(d){return d.depth<3&&d.children?'end':'start';})
+      .text(function(d){ var x=d.data; return (x.u?'★ ':'')+x.n; });
+    nodes.select('text.bd').attr('dy','0.32em').each(function(d){
+      var el=d3.select(this), x=d.data, parts=[];
+      if(x.k==='skill'){ if(x.dn) parts.push(['d',x.dn+'%']); if(x.up) parts.push(['u','+'+x.up+'%']); if(x.tg) parts.push(['t','대상 '+x.tg]); if(x.new) parts.push(['u','신규']); if(x.hot>=3) parts.push(['h','🔥'+x.hot]); }
+      else if(x.k==='style' && !d.children){ var m=styleMark(d); if(m.up) parts.push(['u','▲'+m.up]); if(m.dn) parts.push(['d','▼'+m.dn]); if(deckSet&&m.hit) parts.push(['h','덱 '+m.hit]); if(!d.children) parts.push(['c',m.n+'개 ▸']); }
+      var len=(x.u?2:0)+x.n.length; var off=x.k==='style'?(16+len*17):(14+len*12.5);
+      el.attr('x',off).selectAll('tspan').data(parts).join('tspan').attr('class',function(p){return 'bdg '+p[0];}).attr('dx',function(p,i){return i?6:0;}).text(function(p){return p[1];});
+    });
+  }
+  function act(d){
+    if(d.data.k==='style'||d.data.k==='group'){ if(d.children){ d._children=d.children; d.children=null; } else { d.children=d._children; d._children=null; } draw(); return; }
+    if(d.data.k==='skill'){ selName=d.data.n; show(d.data); draw(); }
+  }
+  function show(x){
+    var inD=Object.keys(raw.decks).filter(function(k){return raw.decks[k].indexOf(x.n)>=0;});
+    var ch=[]; if(x.dn) ch.push('피해 '+x.dn+'%'); if(x.up) ch.push('피해 +'+x.up+'%'); if(x.tg) ch.push('대상 '+x.tg); if(x.new) ch.push('신규 도술');
+    var per = (x.tot&&x.cd) ? (x.tot/x.cd).toFixed(1)+'%' : '—';
+    info.innerHTML='<h4>'+(x.u?'★ ':'')+x.n+'</h4>'+
+      '<dl><dt>계열</dt><dd>'+x.st+(x.u?' · 궁극':'')+'</dd>'+
+      '<dt>11/18 변화</dt><dd>'+(ch.length?ch.join(' · '):'없음')+'</dd>'+
+      '<dt>1회 총 피해</dt><dd>'+(x.tot!=null?Math.round(x.tot)+'%':'—')+'</dd>'+
+      '<dt>최대 대상</dt><dd>'+(x.mt!=null?x.mt+'명':'—')+'</dd>'+
+      '<dt>재사용</dt><dd>'+(x.cd!=null?x.cd+'초':'—')+'</dd>'+
+      '<dt>초당 (1명)</dt><dd>'+per+'</dd>'+
+      '<dt>유저 덱</dt><dd>15개 중 '+x.hot+'개</dd></dl>'+
+      '<span class="sublbl">들어간 추천 덱</span><div class="chips">'+(inD.length?inD.map(function(k){return '<span class="dc">'+k+'</span>';}).join(''):'<span class="note">없음</span>')+'</div>';
+  }
+  document.querySelectorAll('.tfil button').forEach(function(b){ b.addEventListener('click',function(){
+    filt=b.dataset.f; document.querySelectorAll('.tfil button').forEach(function(x){x.setAttribute('aria-pressed',x===b);});
+    if(filt!=='all') expandAll(); draw(); }); });
+  function expandAll(){ root.descendants().forEach(function(d){ if(d._children){ d.children=d._children; d._children=null; } }); }
+  function collapse(){ root.descendants().forEach(function(d){ if(d.depth===2&&d.children){ d._children=d.children; d.children=null; } }); }
+  document.getElementById('texp').addEventListener('click',function(){ expandAll(); draw(); });
+  document.getElementById('tcol').addEventListener('click',function(){ collapse(); draw(); });
+  sel.addEventListener('change',function(){
+    deckSet = sel.value ? new Set(raw.decks[sel.value]) : null;
+    collapse();
+    if(deckSet) root.descendants().forEach(function(d){ if(d.depth===2&&d._children&&d._children.some(function(c){return deckSet.has(c.data.n);})){ d.children=d._children; d._children=null; } });
+    draw();
+  });
+  draw();
+})();
+
+(function(){
+  var tip=document.createElement('div');tip.className='tip';tip.hidden=true;tip.setAttribute('role','tooltip');document.body.appendChild(tip);
+  // 막대 행에 자동 툴팁: 이름 + 값
+  document.querySelectorAll('.br,.dr,.sr').forEach(function(r){ if(r.dataset.tip) return;
+    var lb=r.querySelector('.lb,.nm,.lv'), vl=r.querySelector('.vl'); var t=((lb?lb.textContent.trim():'')+' '+(vl?vl.textContent.trim():'')).trim();
+    if(t){ r.dataset.tip=t; r.tabIndex=0; } });
+  document.querySelectorAll('.seg').forEach(function(g){ g.dataset.tip=g.closest('.lane').querySelector('.nm').firstChild.textContent+' · '+g.textContent; });
+  function place(e,el){ tip.textContent=el.dataset.tip; tip.hidden=false; var r=el.getBoundingClientRect(); var x=(e&&e.clientX)?e.clientX:r.left+r.width/2, y=(e&&e.clientY)?e.clientY:r.top;
+    var w=tip.offsetWidth; tip.style.left=Math.max(8,Math.min(innerWidth-w-8,x-w/2))+'px'; tip.style.top=Math.max(8,y-tip.offsetHeight-12)+'px'; }
+  document.addEventListener('pointermove',function(e){ var el=e.target.closest&&e.target.closest('[data-tip]'); if(el) place(e,el); else tip.hidden=true; });
+  document.addEventListener('focusin',function(e){ var el=e.target.closest('[data-tip]'); if(el) place(null,el); });
+  document.addEventListener('focusout',function(){ tip.hidden=true; });
+  // 내 전투력
+  var inp=document.getElementById('mycp'), out=document.getElementById('mycpo');
+  function upd(){ var v=parseInt(inp.value,10); var rows=document.querySelectorAll('.dp[data-cp]'); var ok=0;
+    rows.forEach(function(r){ var mk=r.querySelector('.mk'); r.classList.remove('ok','no');
+      if(!v){ mk.hidden=true; return; } var cp=+r.dataset.cp; mk.hidden=false; mk.style.left=Math.min(100,v/cp*100*parseFloat(r.querySelector('.tr i').style.width)/100)+'%';
+      if(v>=cp){ r.classList.add('ok'); ok++; } else r.classList.add('no'); });
+    out.textContent = v ? ('권장 전투력 이상인 구역 '+ok+'곳 · 세로선 = 내 전투력') : '입력하면 갈 수 있는 구역이 표시돼요 (이 기기에만 저장)';
+    try{ v?localStorage.setItem('guild1118-cp',v):localStorage.removeItem('guild1118-cp'); }catch(e){} }
+  try{ var sv=localStorage.getItem('guild1118-cp'); if(sv) inp.value=sv; }catch(e){}
+  inp.addEventListener('input',upd); upd();
 })();
 </script>
 </body>
