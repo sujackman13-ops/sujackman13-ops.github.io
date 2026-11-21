@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>공략 · 짐승특공대</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Gowun+Batang:wght@700&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="site.css">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#14163a;color:#eef0ff;font-family:"Noto Sans KR",system-ui,sans-serif;line-height:1.6}
+:root{--c:#ff8a7a;--card:#1d2152;--card2:#252a62;--muted:#b3b7df}
+.top{position:relative;overflow:hidden;text-align:center;padding:56px 20px 40px;
+  background:radial-gradient(ellipse 50% 80% at 70% 0%,rgba(170,140,220,.35),transparent 70%),linear-gradient(180deg,#1b1d4d,#2b3478 70%,#14163a)}
+#sky{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.top-in{position:relative;display:flex;flex-direction:column;align-items:center;gap:10px}
+.top h1{margin:0;font-family:"Gowun Batang",serif;font-weight:700;font-size:clamp(40px,8vw,72px);line-height:1.05;color:#fff;text-shadow:0 0 26px rgba(190,200,255,.45)}
+.top .lead{margin:0;color:#d9d6f5;font-size:15px}
+.wrap{max-width:1040px;margin:0 auto;padding:28px 20px 72px;display:flex;flex-direction:column;gap:24px}
+.filters{display:flex;gap:8px;flex-wrap:wrap}
+.filters button{border:1px solid rgba(255,255,255,.12);background:var(--card2);color:var(--muted);font:inherit;font-size:13.5px;font-weight:700;padding:6px 14px;border-radius:999px;cursor:pointer}
+.filters button[aria-pressed="true"]{background:var(--c);border-color:var(--c);color:#2a160a}
+.bt{background:var(--card);border:1px solid rgba(255,255,255,.07);border-radius:18px;overflow:hidden}
+.bt-head{display:flex;gap:14px;align-items:center;padding:18px 22px;background:linear-gradient(90deg,color-mix(in srgb,var(--c) 22%,#1d2152),#1d2152 75%);border-bottom:3px solid color-mix(in srgb,var(--c) 70%,transparent)}
+.bt-head .tag{flex:none;font-size:12px;font-weight:700;padding:3px 12px;border-radius:999px;background:var(--c);color:#2a160a}
+.bt-head h2{margin:0;font-family:"Do Hyeon",sans-serif;font-weight:400;font-size:clamp(22px,3.6vw,30px);line-height:1.2;color:#fff;flex:1;min-width:0}
+.bt-head .meta{font-size:12.5px;color:var(--muted);text-align:right;white-space:nowrap}
+.vid{position:relative;aspect-ratio:16/9;background:#000}
+.vid iframe,.vid button{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vid button{cursor:pointer;padding:0;background:#000 center/cover no-repeat;display:grid;place-items:center}
+.vid button::after{content:"";width:76px;height:76px;border-radius:50%;background:rgba(232,168,90,.92) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M8 5v14l11-7z' fill='%232a160a'/%3E%3C/svg%3E") center/40px no-repeat;box-shadow:0 0 30px rgba(255,170,80,.5);transition:transform .2s}
+.vid button:hover::after{transform:scale(1.08)}
+.bt-body{padding:16px 22px 20px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.bt-body p{margin:0;font-size:14.5px;color:#dfe1f7}
+.yt{flex:none;display:inline-flex;gap:6px;align-items:center;padding:7px 14px;border-radius:999px;background:#ff3d3d;color:#fff;font-weight:700;font-size:13px;text-decoration:none}
+.empty{text-align:center;color:var(--muted);padding:30px}
+.note{font-size:12.5px;color:var(--muted);margin:0}
+@media (max-width:640px){.bt-head{flex-wrap:wrap;padding:14px 16px}.bt-head .meta{text-align:left;width:100%}.bt-body{padding:14px 16px}}
+</style>
+</head>
+<body>
+<header class="gnb">
+  <a class="logo" href="index.html">짐승특공대<small>공월아1</small></a>
+  <nav>
+    <a href="index.html">홈</a>
+    <a href="notice.html">문파 공지</a>
+    <a href="members.html">문파원</a>
+    <a href="battle.html">문파 전투</a>
+    <a href="guide.html" class="on">공략</a>
+    <a href="updates.html">업데이트</a>
+    <a href="https://forum.kakaogames.com/dokkaebi" target="_blank" rel="noopener"><span class="pc">공식 </span>커뮤니티 ↗</a>
+  </nav>
+</header>
+<section class="top">
+  <canvas id="sky" aria-hidden="true"></canvas>
+  <div class="top-in">
+    <h1>공략</h1>
+    <p class="lead">짐승특공대가 직접 찍은 레이드·전투 공략 영상</p>
+  </div>
+</section>
+<main class="wrap">
+  <div class="filters" id="filters" role="group" aria-label="분류"></div>
+  <div id="list" style="display:flex;flex-direction:column;gap:24px"></div>
+  <p class="note">영상을 누르면 이 페이지에서 바로 재생돼요. 공략 영상을 공유하고 싶으면 운영진에게 링크를 보내 주세요.</p>
+</main>
+<script src="guides.js?v=1"></script>
+<script>
+(function(){
+  var G=window.GUIDES||[], cur='전체';
+  function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  var tags=['전체'].concat(G.map(function(g){return g.tag;}).filter(function(t,i,a){return a.indexOf(t)===i;}));
+  var fb=document.getElementById('filters');
+  fb.innerHTML=tags.map(function(t){return '<button type="button" aria-pressed="'+(t===cur)+'">'+esc(t)+'</button>';}).join('');
+  if(tags.length<3) fb.style.display='none';
+  fb.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;cur=b.textContent;
+    [].forEach.call(fb.children,function(x){x.setAttribute('aria-pressed',x===b);});render();});
+  function render(){
+    var arr=G.filter(function(g){return cur==='전체'||g.tag===cur;});
+    document.getElementById('list').innerHTML=arr.length?arr.map(function(g){var id=esc(g.id);
+      return '<article class="bt"><div class="bt-head"><span class="tag">'+esc(g.tag)+'</span><h2>'+esc(g.title)+'</h2><span class="meta">'+esc(g.date)+' · '+esc(g.author)+'</span></div>'+
+        '<div class="vid"><button type="button" data-id="'+id+'" aria-label="'+esc(g.title)+' 재생" style="background-image:url(https://i.ytimg.com/vi/'+id+'/hqdefault.jpg)"></button></div>'+
+        '<div class="bt-body"><p>'+esc(g.desc)+'</p><a class="yt" href="https://www.youtube.com/watch?v='+id+'" target="_blank" rel="noopener">▶ 유튜브에서 보기 ↗</a></div></article>';
+    }).join(''):'<p class="empty">아직 영상이 없어요.</p>';
+  }
+  document.getElementById('list').addEventListener('click',function(e){var b=e.target.closest('.vid button');if(!b)return;
+    var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/'+b.dataset.id+'?autoplay=1&rel=0';
+    f.title=b.getAttribute('aria-label');f.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';f.allowFullscreen=true;f.referrerPolicy='strict-origin-when-cross-origin';
+    b.replaceWith(f);});
+  render();
+  var c=document.getElementById('sky'),x=c.getContext('2d'),dpr=Math.min(window.devicePixelRatio||1,2),st=[];
+  var still=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function size(){c.width=c.offsetWidth*dpr;c.height=c.offsetHeight*dpr;st=[];var n=Math.round(c.offsetWidth*c.offsetHeight/2400);
+    for(var i=0;i<n;i++)st.push({x:Math.random()*c.width,y:Math.random()*c.height,r:(Math.random()*1.2+.3)*dpr,p:Math.random()*6.28,s:Math.random()*.02+.005});}
+  function draw(){x.clearRect(0,0,c.width,c.height);for(var i=0;i<st.length;i++){var s=st[i];s.p+=s.s;x.globalAlpha=.3+.7*Math.abs(Math.sin(s.p));x.fillStyle='#fff';x.beginPath();x.arc(s.x,s.y,s.r,0,6.28);x.fill();}
+    if(!still)requestAnimationFrame(draw);}
+  size();draw();window.addEventListener('resize',function(){size();if(still)draw();});
+})();
+</script>
+</body>
+</html>
