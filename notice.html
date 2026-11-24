@@ -74,7 +74,7 @@ body{margin:0;background:#14163a;color:#eef0ff;font-family:"Noto Sans KR",system
 .ev .cd{font-size:12.5px;font-weight:700;color:var(--e);font-variant-numeric:tabular-nums}
 
 /* 2. 가입 기준 */
-.rules{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.rules{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 .rc{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:20px 12px 18px;border-radius:14px;background:var(--card2);border:1px solid rgba(255,255,255,.06)}
 .rc .step{position:absolute;top:10px;left:12px;font-family:"Do Hyeon",sans-serif;font-size:13px;color:var(--join);opacity:.8}
 .rc .ic{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font-size:24px;background:color-mix(in srgb,var(--join) 18%,transparent);border:1px solid color-mix(in srgb,var(--join) 45%,transparent)}
@@ -107,11 +107,12 @@ body{margin:0;background:#14163a;color:#eef0ff;font-family:"Noto Sans KR",system
 .goal .line{font-size:14.5px}
 .goal .line b{color:#ffd98a}
 
-@media (max-width:900px){.rules,.pts{grid-template-columns:repeat(2,minmax(0,1fr))}.sched{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:900px){.pts{grid-template-columns:repeat(2,minmax(0,1fr))}.sched{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:640px){.toc{grid-template-columns:minmax(0,1fr)}.ti{flex-direction:row;align-items:center;gap:12px}.ti svg.emb{width:40px;height:50px}.ti .num{top:50%;transform:translateY(-50%)}
   .bt-head svg.emb{width:50px;height:62px}.bt-body{padding:16px}.next{padding:16px 22px}}
 @media (max-width:420px){.rules{grid-template-columns:minmax(0,1fr)}.gauge{font-size:11px}}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.ti,.ev,.btn{transition:none}}
+@media (max-width:640px){.rules{grid-template-columns:minmax(0,1fr)}}
 </style>
 </head>
 <body>
@@ -157,7 +158,6 @@ body{margin:0;background:#14163a;color:#eef0ff;font-family:"Noto Sans KR",system
     </div>
     <div class="links">
       <a class="btn kakao" href="https://open.kakao.com/o/gR1uGdSi" target="_blank" rel="noopener">💬 오픈톡 입장 ↗</a>
-      <a class="btn discord" href="https://discord.gg/FQfqeSweJk" target="_blank" rel="noopener">🎧 디스코드 입장 ↗</a>
     </div>
   </div>
 </section>
@@ -199,7 +199,6 @@ body{margin:0;background:#14163a;color:#eef0ff;font-family:"Noto Sans KR",system
       <div class="rules">
         <div class="rc"><span class="step">STEP 1</span><span class="ic" aria-hidden="true">⚔️</span><span class="big">전투력 10만+</span><span class="sm">가입 조건</span></div>
         <div class="rc"><span class="step">STEP 2</span><span class="ic" aria-hidden="true">💬</span><span class="big">3일 안 오픈단톡방</span><span class="sm must">입장 필수!</span><a class="btn kakao" href="https://open.kakao.com/o/gR1uGdSi" target="_blank" rel="noopener">오픈톡 입장 ↗</a></div>
-        <div class="rc"><span class="step">STEP 3</span><span class="ic" aria-hidden="true">🎧</span><span class="big">문파 디스코드</span><span class="sm">함께 소통해요</span><a class="btn discord" href="https://discord.gg/FQfqeSweJk" target="_blank" rel="noopener">디스코드 입장 ↗</a></div>
         <div class="rc warn"><span class="step">주의</span><span class="ic" aria-hidden="true">👋</span><span class="big">3일 이상 미접속</span><span class="sm">사요나라입니다</span></div>
       </div>
       <div class="rule">단, 휴가·출장·바쁜 일정은 <b>단톡방 또는 운영진</b>에게 언질해 주시면 예외 적용하겠습니다~</div>
